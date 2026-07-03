@@ -1,0 +1,156 @@
+html{font-size:17.5px;}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+      .title-bg{ background-image: url('../assets/img/Background.JPG'); background-size: cover; background-position: center; }
+      .title-overlay{ background: linear-gradient(to right, rgba(255,255,255,0.92), rgba(255,255,255,0.75)); }
+      .tab-btn {
+        padding: 0.6rem 1.4rem;
+        border-radius: 0.75rem 0.75rem 0 0;
+        font-weight: 600;
+        font-size: 0.95rem;
+        border: 2px solid transparent;
+        border-bottom: none;
+        cursor: pointer;
+        transition: background 0.18s, color 0.18s, border-color 0.18s;
+        background: #e5e7eb;
+        color: #6b7280;
+        position: relative;
+        bottom: -2px;
+      }
+      .tab-btn.active {
+        background: #fff;
+        color: #1e3a5f;
+        border-color: #cbd5e1;
+        border-bottom-color: #fff;
+        z-index: 2;
+      }
+      .tab-btn:not(.active):hover {
+        background: #d1d5db;
+        color: #374151;
+      }
+      .tab-panel { display: none; }
+      .tab-panel.active { display: block; }
+      .log-input-label, .il-input-label { font-size: 0.82rem; font-weight: 600; color: #374151; margin-bottom: 2px; }
+      .log-input-field, .il-input-field {
+        width: 100%;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 0.5rem;
+        padding: 0.4rem 0.65rem;
+        font-size: 0.9rem;
+        outline: none;
+        transition: border-color 0.15s;
+        background: #f8fafc;
+      }
+      .log-input-field:focus, .il-input-field:focus { border-color: #4f7c3e; background: #fff; }
+      .product-card {
+        border: 2px solid #e2e8f0;
+        border-radius: 0.75rem;
+        padding: 0.6rem 0.9rem;
+        cursor: pointer;
+        transition: border-color 0.15s, background 0.15s;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: #374151;
+        background: #f8fafc;
+        text-align: center;
+      }
+      .product-card:hover { border-color: #4f7c3e; background: #f0fdf4; }
+      .product-card.selected { border-color: #4f7c3e; background: #dcfce7; color: #14532d; font-weight: 700; }
+      .product-card.suggested { border-color: #86efac; }
+      .log-result-badge {
+        display: inline-block;
+        padding: 0.25rem 0.7rem;
+        border-radius: 9999px;
+        font-size: 0.78rem;
+        font-weight: 600;
+      }
+      .vol-method-btn.selected {
+        border-color: #15803d;
+        background: #dcfce7;
+        color: #14532d;
+      }
+      .vol-method-btn:not(.selected):hover {
+        border-color: #86efac;
+        background: #f0fdf4;
+        color: #166534;
+      }
+      .sp-type-btn.selected {
+        border-color: #0f766e;
+        background: #ccfbf1;
+        color: #134e4a;
+      }
+      .sp-type-btn:not(.selected):hover {
+        border-color: #5eead4;
+        background: #f0fdfa;
+        color: #0f766e;
+      }
+      .pps-type-btn { transition: border-color 0.15s, background 0.15s, color 0.15s; }
+      .pps-type-btn.selected {
+        border-color: #0d9488;
+        background: #ccfbf1;
+        color: #134e4a;
+      }
+      .pps-type-btn:not(.selected):hover {
+        border-color: #5eead4;
+        background: #f0fdfa;
+        color: #0f766e;
+      }
+      .pps-product-card {
+        border: 2px solid #e2e8f0;
+        border-radius: 0.75rem;
+        cursor: pointer;
+        transition: border-color 0.15s, background 0.15s;
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: #374151;
+        background: #f8fafc;
+        text-align: center;
+        overflow: hidden;
+      }
+      .pps-product-card:hover { border-color: #0d9488; }
+      .pps-product-card.selected { border-color: #0d9488; background: #ccfbf1; color: #134e4a; font-weight: 700; }
+      .pps-product-card.suggested { border-color: #5eead4; }
+      .pps-product-card img { width: 100%; height: 90px; object-fit: cover; }
+      .pps-product-card .card-label { padding: 0.35rem 0.5rem; }
+      .pub-card {
+        border-left: 4px solid #0d9488;
+        background: #f8fafc;
+        border-radius: 0 0.75rem 0.75rem 0;
+        padding: 0.75rem 1rem;
+        transition: background 0.15s;
+      }
+      .pub-card:hover { background: #f0fdfa; }
+      .team-avatar {
+        width: 2.75rem; height: 2.75rem;
+        border-radius: 9999px;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 0.9rem; color: #fff;
+        flex-shrink: 0;
+      }
+
+/* ---- Compact input rows: label on the left, value box on the right ---- */
+.fldrow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
+.fldrow > .il-input-label, .fldrow > .log-input-label { flex: 1 1 auto; margin-bottom: 0; }
+.fldrow > .il-input-field, .fldrow > .log-input-field { flex: 0 0 6.5rem; width: 6.5rem; }
+.fldrow > p.text-xs { flex: 1 0 100%; margin-top: 2px; }
+
+/* ---- Section-4 editable parameters (Industrial Logs & Sawn Products) ---- */
+.param-title { font-size: 0.8rem; font-weight: 600; color: #374151; margin-bottom: 6px; }
+.param-sub { font-weight: 400; color: #9ca3af; font-size: 0.72rem; }
+.param-row { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 5px; }
+.param-row .param-label { flex: 1 1 auto; font-size: 0.78rem; color: #4b5563; }
+.param-row .param-label code { font-size: 0.7rem; color: #9ca3af; }
+.param-row .param-input { flex: 0 0 6rem; width: 6rem; border: 1.5px solid #cbd5e1;
+  border-radius: 0.4rem; padding: 0.3rem 0.5rem; font-size: 0.85rem; background: #f8fafc; }
+.param-row .param-input:focus { border-color: #4f7c3e; background: #fff; outline: none; }
+.param-reset { font-size: 0.72rem; color: #4f46e5; margin-top: 2px; }
+.param-reset:hover { text-decoration: underline; }
+
+/* ---- Soft neutral page background (applies to every tab) ---- */
+body.bg-gray-50 { background-color: #f2f1ee; }
+/* Give the white cards a touch more definition against the tint */
+.tab-panel .rounded-2xl.shadow { box-shadow: 0 1px 3px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04); border: 1px solid #ecebe7; }
+
+/* ---- Sensitivity sub-tabs ---- */
+.sens-subtab { flex:1 1 0; padding:.4rem .5rem; border-radius:.6rem; font-size:.8rem; font-weight:600; background:#f1f0ee; color:#6b7280; cursor:pointer; border:1.5px solid transparent; transition:background .15s,color .15s; }
+.sens-subtab:hover { background:#e7e5e4; }
+.sens-subtab.sens-subtab-active { background:#fdf4ff; color:#a21caf; border-color:#e9d5ff; }

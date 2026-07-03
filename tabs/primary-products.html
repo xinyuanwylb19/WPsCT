@@ -1,0 +1,159 @@
+      <div id="tab-sp" class="tab-panel">
+        <section class="grid lg:grid-cols-3 gap-6">
+
+          <div class="space-y-5 lg:col-span-1">
+
+            <div class="p-4 bg-white rounded-2xl shadow">
+              <h2 class="text-base font-bold text-teal-800 mb-3 flex items-center gap-2">
+                Product Type &amp; Dimensions
+              </h2>
+
+              <p class="il-input-label mb-2">Product category</p>
+              <div class="grid grid-cols-2 gap-2 mb-3">
+                <button onclick="setSpType('lumber')" data-ptype="lumber"
+                  class="sp-type-btn selected text-xs font-semibold px-2 py-2 rounded-lg border-2 border-teal-600 bg-teal-50 text-teal-800">
+                  🪚 Lumber / Timber
+                </button>
+                <button onclick="setSpType('panel')" data-ptype="panel"
+                  class="sp-type-btn text-xs font-semibold px-2 py-2 rounded-lg border-2 border-gray-200 bg-gray-50 text-gray-600">
+                  🟫 Panel / Board
+                </button>
+                <button onclick="setSpType('engineered')" data-ptype="engineered"
+                  class="sp-type-btn text-xs font-semibold px-2 py-2 rounded-lg border-2 border-gray-200 bg-gray-50 text-gray-600">
+                  🏗️ Engineered Wood
+                </button>
+                <button onclick="setSpType('other')" data-ptype="other"
+                  class="sp-type-btn text-xs font-semibold px-2 py-2 rounded-lg border-2 border-gray-200 bg-gray-50 text-gray-600">
+                  📦 Other Solid Wood
+                </button>
+              </div>
+              <p id="sp-type-desc" class="text-xs text-gray-500 mb-3 italic">Dimensional lumber (2×4, 2×6, glulam beams, etc.): enter thickness, width, length.</p>
+
+              <div id="sp-inputs-lumber" class="space-y-2">
+                <div class="fldrow"><p class="il-input-label">Thickness (mm)</p>
+                  <input id="sp-thickness" type="number" min="1" max="500" step="1" value="38" class="il-input-field" oninput="onSpChange()"></div>
+                <div class="fldrow"><p class="il-input-label">Width (mm)</p>
+                  <input id="sp-width" type="number" min="1" max="1000" step="1" value="89" class="il-input-field" oninput="onSpChange()"></div>
+                <div class="fldrow"><p class="il-input-label">Length (m)</p>
+                  <input id="sp-length" type="number" min="0.1" max="30" step="0.01" value="3.66" class="il-input-field" oninput="onSpChange()"></div>
+                <div class="fldrow"><p class="il-input-label">Quantity (pieces)</p>
+                  <input id="sp-qty" type="number" min="1" max="999999" step="1" value="1" class="il-input-field" oninput="onSpChange()"></div>
+              </div>
+
+              <div id="sp-inputs-panel" class="space-y-2 hidden">
+                <div class="fldrow"><p class="il-input-label">Thickness (mm)</p>
+                  <input id="sp-panel-t" type="number" min="1" max="200" step="0.5" value="18" class="il-input-field" oninput="onSpChange()"></div>
+                <div class="fldrow"><p class="il-input-label">Width (m)</p>
+                  <input id="sp-panel-w" type="number" min="0.1" max="10" step="0.01" value="1.22" class="il-input-field" oninput="onSpChange()"></div>
+                <div class="fldrow"><p class="il-input-label">Length (m)</p>
+                  <input id="sp-panel-l" type="number" min="0.1" max="20" step="0.01" value="2.44" class="il-input-field" oninput="onSpChange()"></div>
+                <div class="fldrow"><p class="il-input-label">Quantity (sheets)</p>
+                  <input id="sp-panel-q" type="number" min="1" max="999999" step="1" value="1" class="il-input-field" oninput="onSpChange()"></div>
+              </div>
+
+              <div id="sp-inputs-engineered" class="space-y-2 hidden">
+                <div class="fldrow"><p class="il-input-label">Depth / Height (mm)</p>
+                  <input id="sp-eng-d" type="number" min="1" max="2000" step="1" value="200" class="il-input-field" oninput="onSpChange()"></div>
+                <div class="fldrow"><p class="il-input-label">Width (mm)</p>
+                  <input id="sp-eng-w" type="number" min="1" max="1000" step="1" value="130" class="il-input-field" oninput="onSpChange()"></div>
+                <div class="fldrow"><p class="il-input-label">Length (m)</p>
+                  <input id="sp-eng-l" type="number" min="0.1" max="40" step="0.01" value="6" class="il-input-field" oninput="onSpChange()"></div>
+                <div class="fldrow"><p class="il-input-label">Quantity (pieces)</p>
+                  <input id="sp-eng-q" type="number" min="1" max="999999" step="1" value="1" class="il-input-field" oninput="onSpChange()"></div>
+              </div>
+
+              <div id="sp-inputs-other" class="space-y-2 hidden">
+                <div class="fldrow"><p class="il-input-label">Total volume (m³)</p>
+                  <input id="sp-other-vol" type="number" min="0.001" max="10000" step="0.001" value="0.1" class="il-input-field" oninput="onSpChange()"></div>
+                <div class="fldrow"><p class="il-input-label">Description (optional)</p>
+                  <input id="sp-other-desc" type="text" placeholder="e.g. wood pallet, railway tie, round post" class="il-input-field"></div>
+              </div>
+
+              <div class="space-y-2 mt-3 pt-3 border-t border-gray-100">
+                <div><p class="il-input-label">Wood species / type</p>
+                  <select id="sp-woodtype" class="il-input-field" onchange="syncSpDefaults(); onSpChange()">
+                    <option value="softwood">Softwood - Pine, Spruce, Fir, Cedar</option>
+                    <option value="hardwood">Hardwood - Oak, Maple, Birch, Ash</option>
+                    <option value="tropical">Tropical Hardwood - Teak, Meranti, Ipe</option>
+                  </select></div>
+                <div class="fldrow"><p class="il-input-label">Tracking horizon (years)</p>
+                  <input id="sp-years" type="number" min="10" max="500" step="1" value="100" class="il-input-field" oninput="onSpChange()"></div>
+              </div>
+            </div>
+
+            <div class="p-4 bg-white rounded-2xl shadow">
+              <h2 class="text-base font-bold text-teal-800 mb-1 flex items-center gap-2">
+                Physical Parameters
+              </h2>
+              <div class="space-y-2">
+                <div class="fldrow"><p class="il-input-label">Oven-dry density (kg/m³)</p>
+                  <input id="sp-density" type="number" min="100" max="1200" step="1" value="420" class="il-input-field" oninput="onSpChange()"></div>
+                <div class="fldrow"><p class="il-input-label">Carbon fraction (0-1)</p>
+                  <input id="sp-carbon-frac" type="number" min="0.1" max="0.9" step="0.01" value="0.50" class="il-input-field" oninput="onSpChange()"></div>
+                <button onclick="resetSpParams()" class="text-xs text-indigo-600 hover:underline mt-1">↺ Reset to species defaults</button>
+              </div>
+            </div>
+
+            <div class="p-4 bg-white rounded-2xl shadow">
+              <h2 class="text-base font-bold text-teal-800 mb-1 flex items-center gap-2">
+                End-Use Category
+              </h2>
+              <div id="sp-product-grid" class="grid grid-cols-2 gap-2">
+                <div class="product-card" data-product="Construction" onclick="selectSpProduct('Construction')">🏠 Construction</div>
+                <div class="product-card" data-product="Exterior" onclick="selectSpProduct('Exterior')">🌉 Exterior</div>
+                <div class="product-card" data-product="Household" onclick="selectSpProduct('Household')">🪑 Household</div>
+                <div class="product-card" data-product="Graphic Paper" onclick="selectSpProduct('Graphic Paper')">📰 Graphic Paper</div>
+                <div class="product-card" data-product="Household Paper" onclick="selectSpProduct('Household Paper')">🧻 Household Paper</div>
+                <div class="product-card" data-product="Other Paper" onclick="selectSpProduct('Other Paper')">📄 Other Paper</div>
+              </div>
+              <div id="sp-suggestion-note" class="mt-2 text-xs text-teal-700 font-medium hidden"></div>
+
+              <div class="mt-3 pt-3 border-t border-gray-100">
+                <p class="il-input-label">Processing efficiency (0-1)</p>
+                <input id="sp-efficiency" type="number" min="0.01" max="1.0" step="0.01" value="0.90" class="il-input-field" oninput="onSpChange()">
+                <button onclick="resetSpEfficiency()" class="text-xs text-indigo-600 hover:underline mt-1">↺ Reset to category default</button>
+              </div>
+            </div>
+
+            <div class="p-4 bg-white rounded-2xl shadow">
+              <h2 class="text-base font-bold text-teal-800 mb-3 flex items-center gap-2">
+                Run Product Carbon Tracker
+              </h2>
+              <div id="sp-param-box" class="mb-3"></div>
+              <div class="flex flex-wrap gap-2">
+                <button id="btn-sp-run" class="btn px-4 py-2 rounded-xl bg-teal-700 text-white hover:bg-teal-800" onclick="runSpTracker()">▶ Run Tracker</button>
+                <button id="btn-sp-clear" class="btn px-4 py-2 rounded-xl bg-gray-200 hover:bg-gray-300" onclick="clearSpTracker()">Clear</button>
+              </div>
+              <div id="sp-status" class="text-sm text-gray-600 mt-2"></div>
+            </div>
+
+          </div>
+
+          <div class="space-y-5 lg:col-span-2">
+            <div id="sp-summary-panel" class="p-4 bg-white rounded-2xl shadow hidden">
+              <h2 class="text-base font-semibold mb-3 text-gray-700">📋 Primary Product Carbon Summary</h2>
+              <div id="sp-summary-badges" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+            </div>
+            <div id="sp-estimate" class="p-4 bg-white rounded-2xl shadow hidden">
+              <div class="flex items-baseline justify-between mb-3">
+                <h2 class="text-base font-semibold text-gray-700">Estimated Product Carbon</h2>
+                <span class="text-xs text-gray-400">Live preview</span>
+              </div>
+              <div id="sp-estimate-display"></div>
+            </div>
+            <div class="p-4 bg-white rounded-2xl shadow">
+              <h2 class="text-lg font-semibold mb-2">Carbon Retained Over Time</h2>
+              <div id="sp-plot-area" class="border rounded-xl h-96"></div>
+            </div>
+            <div class="p-4 bg-white rounded-2xl shadow">
+              <h2 class="text-base font-semibold mb-2 text-gray-700">Results Table</h2>
+              <div id="sp-results-preview" class="overflow-auto border rounded-xl p-2 max-h-64 text-xs"></div>
+              <div class="mt-3">
+                <a id="sp-download-link" class="hidden px-3 py-2 rounded-xl bg-teal-600 text-white hover:bg-teal-700 text-sm" download="PPsCarbon_Results.csv">⬇ Download Results</a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- 3. End-use Products tab -->

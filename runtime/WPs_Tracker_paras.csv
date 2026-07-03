@@ -1,0 +1,38 @@
+Product,Variable,Parameter
+Biofuel,efficiency,1
+Biochar,decay_1,0.007
+Biochar,decay_2,0.0003
+Construction,disposal_1,0.133
+Construction,disposal_2,0.028
+Construction,disposal_3,80
+Construction,recycle_1,0.085
+Construction,recycle_2,0.015
+Exterior,disposal_1,0.326
+Exterior,disposal_2,0.041
+Exterior,disposal_3,25
+Household,disposal_1,0.265
+Household,disposal_2,0.031
+Household,disposal_3,30
+Household,recycle_1,0.085
+Household,recycle_2,0.015
+Graphic Paper,disposal_1,1.006
+Graphic Paper,disposal_2,0
+Graphic Paper,disposal_3,6
+Graphic Paper,recycle_1,0.225
+Graphic Paper,recycle_2,0.027
+Other Paper,disposal_1,6.036
+Other Paper,disposal_2,0
+Other Paper,disposal_3,1
+Other Paper,recycle_1,0.225
+Other Paper,recycle_2,0.027
+Household Paper,disposal_1,12.036
+Household Paper,disposal_2,0
+Household Paper,disposal_3,0.5
+Landfill,con_decay1,0.997
+Landfill,con_decay2,30
+Landfill,ext_decay1,1.178
+Landfill,ext_decay2,20
+Landfill,hou_decay1,1.329
+Landfill,hou_decay2,15
+Landfill,pap_decay1,0.821
+Landfill,pap_decay2,5

@@ -1,0 +1,209 @@
+      <div id="tab-sens" class="tab-panel">
+
+        <!-- Row 1: Parameter Generator (inputs + live curve preview) -->
+        <section class="grid lg:grid-cols-3 gap-6 mb-6">
+          <div class="lg:col-span-1">
+            <div class="p-4 bg-white rounded-2xl shadow">
+              <h2 class="text-base font-bold text-fuchsia-800 mb-1">Parameter Generator</h2>
+              <p class="text-xs text-gray-500 mb-3">Set the disposal, recycling, and landfill parameters, preview the curves.</p>
+
+              <p class="param-title mb-1">Disposal - solid wood</p>
+              <div class="grid grid-cols-12 gap-2 mb-1" style="font-size:.66rem;color:#9ca3af">
+                <span class="col-span-5"></span><span class="col-span-3">Half-life (yr)</span><span class="col-span-4">Peak (/yr)</span>
+              </div>
+              <div class="grid grid-cols-12 gap-2 items-center mb-1">
+                <span class="col-span-5 text-xs font-medium text-gray-600">Construction</span>
+                <input id="sg-hl-Construction" type="number" min="1" step="1" value="80" class="col-span-3 il-input-field" oninput="sgRedraw()">
+                <input id="sg-pk-Construction" type="number" min="0" step="0.0005" value="0.01085" class="col-span-4 il-input-field" oninput="sgRedraw()">
+              </div>
+              <div class="grid grid-cols-12 gap-2 items-center mb-1">
+                <span class="col-span-5 text-xs font-medium text-gray-600">Exterior</span>
+                <input id="sg-hl-Exterior" type="number" min="1" step="1" value="25" class="col-span-3 il-input-field" oninput="sgRedraw()">
+                <input id="sg-pk-Exterior" type="number" min="0" step="0.0005" value="0.02659" class="col-span-4 il-input-field" oninput="sgRedraw()">
+              </div>
+              <div class="grid grid-cols-12 gap-2 items-center mb-2">
+                <span class="col-span-5 text-xs font-medium text-gray-600">Household</span>
+                <input id="sg-hl-Household" type="number" min="1" step="1" value="30" class="col-span-3 il-input-field" oninput="sgRedraw()">
+                <input id="sg-pk-Household" type="number" min="0" step="0.0005" value="0.02161" class="col-span-4 il-input-field" oninput="sgRedraw()">
+              </div>
+
+              <p class="param-title mb-1">Disposal - paper</p>
+              <div class="grid grid-cols-12 gap-2 items-center mb-1">
+                <span class="col-span-5 text-xs font-medium text-gray-600">Graphic Paper</span>
+                <input id="sg-hl-GraphicPaper" type="number" min="0.1" step="0.5" value="6" class="col-span-3 il-input-field" oninput="sgRedraw()">
+              </div>
+              <div class="grid grid-cols-12 gap-2 items-center mb-1">
+                <span class="col-span-5 text-xs font-medium text-gray-600">Other Paper</span>
+                <input id="sg-hl-OtherPaper" type="number" min="0.1" step="0.5" value="1" class="col-span-3 il-input-field" oninput="sgRedraw()">
+              </div>
+              <div class="grid grid-cols-12 gap-2 items-center mb-2">
+                <span class="col-span-5 text-xs font-medium text-gray-600">Household Paper</span>
+                <input id="sg-hl-HouseholdPaper" type="number" min="0.1" step="0.1" value="0.5" class="col-span-3 il-input-field" oninput="sgRedraw()">
+              </div>
+
+              <details class="mt-2">
+                <summary class="param-title cursor-pointer select-none">Recycling rate</summary>
+                <div class="grid grid-cols-12 gap-2 mb-1 mt-1" style="font-size:.66rem;color:#9ca3af">
+                  <span class="col-span-6"></span><span class="col-span-3">Initial</span><span class="col-span-3">Growth</span>
+                </div>
+                <div class="grid grid-cols-12 gap-2 items-center mb-1">
+                  <span class="col-span-6 text-xs font-medium text-gray-600">Construction</span>
+                  <input id="sg-r1-Construction" type="number" step="0.005" value="0.085" class="col-span-3 il-input-field">
+                  <input id="sg-r2-Construction" type="number" step="0.005" value="0.015" class="col-span-3 il-input-field">
+                </div>
+                <div class="grid grid-cols-12 gap-2 items-center mb-1">
+                  <span class="col-span-6 text-xs font-medium text-gray-600">Household</span>
+                  <input id="sg-r1-Household" type="number" step="0.005" value="0.085" class="col-span-3 il-input-field">
+                  <input id="sg-r2-Household" type="number" step="0.005" value="0.015" class="col-span-3 il-input-field">
+                </div>
+                <div class="grid grid-cols-12 gap-2 items-center mb-1">
+                  <span class="col-span-6 text-xs font-medium text-gray-600">Graphic Paper</span>
+                  <input id="sg-r1-GraphicPaper" type="number" step="0.005" value="0.225" class="col-span-3 il-input-field">
+                  <input id="sg-r2-GraphicPaper" type="number" step="0.005" value="0.027" class="col-span-3 il-input-field">
+                </div>
+                <div class="grid grid-cols-12 gap-2 items-center mb-1">
+                  <span class="col-span-6 text-xs font-medium text-gray-600">Other Paper</span>
+                  <input id="sg-r1-OtherPaper" type="number" step="0.005" value="0.225" class="col-span-3 il-input-field">
+                  <input id="sg-r2-OtherPaper" type="number" step="0.005" value="0.027" class="col-span-3 il-input-field">
+                </div>
+              </details>
+
+              <details class="mt-2">
+                <summary class="param-title cursor-pointer select-none">Landfill decay</summary>
+                <div class="grid grid-cols-12 gap-2 mb-1 mt-1" style="font-size:.66rem;color:#9ca3af">
+                  <span class="col-span-6"></span><span class="col-span-3">Log-mean</span><span class="col-span-3">Scale</span>
+                </div>
+                <div class="grid grid-cols-12 gap-2 items-center mb-1">
+                  <span class="col-span-6 text-xs font-medium text-gray-600">Construction</span>
+                  <input id="sg-lf1-con" type="number" step="0.05" value="0.997" class="col-span-3 il-input-field">
+                  <input id="sg-lf2-con" type="number" step="1" value="30" class="col-span-3 il-input-field">
+                </div>
+                <div class="grid grid-cols-12 gap-2 items-center mb-1">
+                  <span class="col-span-6 text-xs font-medium text-gray-600">Exterior</span>
+                  <input id="sg-lf1-ext" type="number" step="0.05" value="1.178" class="col-span-3 il-input-field">
+                  <input id="sg-lf2-ext" type="number" step="1" value="20" class="col-span-3 il-input-field">
+                </div>
+                <div class="grid grid-cols-12 gap-2 items-center mb-1">
+                  <span class="col-span-6 text-xs font-medium text-gray-600">Household</span>
+                  <input id="sg-lf1-hou" type="number" step="0.05" value="1.329" class="col-span-3 il-input-field">
+                  <input id="sg-lf2-hou" type="number" step="1" value="15" class="col-span-3 il-input-field">
+                </div>
+                <div class="grid grid-cols-12 gap-2 items-center mb-1">
+                  <span class="col-span-6 text-xs font-medium text-gray-600">Paper</span>
+                  <input id="sg-lf1-pap" type="number" step="0.05" value="0.821" class="col-span-3 il-input-field">
+                  <input id="sg-lf2-pap" type="number" step="1" value="5" class="col-span-3 il-input-field">
+                </div>
+              </details>
+
+              <details class="mt-2">
+                <summary class="param-title cursor-pointer select-none">Biofuel &amp; biochar</summary>
+                <div class="fldrow mt-1"><p class="il-input-label">Biofuel efficiency</p><input id="sg-biofuel" type="number" min="0" max="1" step="0.05" value="1" class="il-input-field"></div>
+                <div class="fldrow"><p class="il-input-label">Biochar base decay rate</p><input id="sg-bc1" type="number" step="0.001" value="0.007" class="il-input-field"></div>
+                <div class="fldrow"><p class="il-input-label">Biochar pool size based decay rate</p><input id="sg-bc2" type="number" step="0.0001" value="0.0003" class="il-input-field"></div>
+              </details>
+
+              <div class="grid grid-cols-2 gap-2 mt-3">
+                <button class="btn px-3 py-2 rounded-xl bg-fuchsia-700 text-white text-sm font-semibold hover:bg-fuchsia-800" onclick="sensGenerate()">Generate</button>
+                <button class="btn px-3 py-2 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700" onclick="sgDownload()">&#8595; Download file</button>
+              </div>
+              <p class="text-xs text-gray-400 mt-2" id="sg-note"></p>
+            </div>
+          </div>
+
+          <div class="lg:col-span-2">
+            <div class="p-4 bg-white rounded-2xl shadow">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <h2 class="text-base font-semibold text-gray-700 mr-1">Parameter curves</h2>
+                <select id="sg-curve-type" onchange="sgTypeChanged()" class="il-input-field" style="width:auto">
+                  <option value="disposal">Disposal</option>
+                  <option value="recycling">Recycling</option>
+                  <option value="landfill">Landfill</option>
+                </select>
+                <select id="sg-curve-item" onchange="sgRedraw()" class="il-input-field" style="width:auto"></select>
+                <button class="btn px-3 py-1.5 rounded-lg bg-fuchsia-700 text-white text-xs font-semibold hover:bg-fuchsia-800" onclick="sgAddCurve()">Add curve</button>
+                <button class="btn px-3 py-1.5 rounded-lg bg-gray-200 text-xs font-semibold hover:bg-gray-300" onclick="sgClearCurves()">Clear</button>
+              </div>
+              <div id="sg-curve-plot" class="border rounded-xl h-96"></div>
+              <p class="text-xs text-gray-400 mt-2">The highlighted line follows the current inputs; "Add curve" freezes it so you can compare products or scenarios.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Row 2: Sensitivity Analysis (three analyses under one card, via sub-tabs) -->
+        <section class="grid lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-1">
+            <div class="p-4 bg-white rounded-2xl shadow">
+              <h2 class="text-base font-bold text-fuchsia-800 mb-3">Sensitivity Analysis</h2>
+
+              <div class="mb-3">
+                <p class="il-input-label mb-1">Input Data</p>
+                <select id="sens-data" class="il-input-field" onchange="sensDataChanged()">
+                  <option value="/data/Example_US.csv">United States</option>
+                  <option value="/data/Example_ME.csv">Maine, USA</option>
+                  <option value="upload">Upload your data...</option>
+                </select>
+                <input id="sens-data-file" type="file" accept=".csv" class="il-input-field mt-1 hidden" onchange="sensUploadData(event)">
+              </div>
+
+              <div class="flex gap-1 mb-3">
+                <button id="senstab-response" class="sens-subtab sens-subtab-active" onclick="switchSensSub('response')">Parameter response</button>
+                <button id="senstab-influence" class="sens-subtab" onclick="switchSensSub('influence')">Parameter influence</button>
+                <button id="senstab-uncertainty" class="sens-subtab" onclick="switchSensSub('uncertainty')">Uncertainty</button>
+              </div>
+
+              <div id="sensctl-response">
+                <div class="mb-2"><p class="il-input-label mb-1">Vary</p>
+                  <select id="sens-spec" class="il-input-field" onchange="sensSpecChanged()">
+                    <option value="sl:Construction">Construction service life (yr)</option>
+                    <option value="sl:Exterior">Exterior service life (yr)</option>
+                    <option value="sl:Household">Household service life (yr)</option>
+                    <option value="sl:Graphic Paper">Graphic Paper service life (yr)</option>
+                    <option value="sl:Other Paper">Other Paper service life (yr)</option>
+                    <option value="sl:Household Paper">Household Paper service life (yr)</option>
+                    <option value="recabs:all">Recycling rate (0-1)</option>
+                    <option value="lfabs:all">Landfill turnover (yr)</option>
+                  </select></div>
+                <div class="grid grid-cols-3 gap-2">
+                  <div><p class="il-input-label">Min</p><input id="sens-min" type="number" step="any" value="20" class="il-input-field"></div>
+                  <div><p class="il-input-label">Max</p><input id="sens-max" type="number" step="any" value="160" class="il-input-field"></div>
+                  <div><p class="il-input-label">Steps</p><input id="sens-steps" type="number" min="2" max="40" value="9" class="il-input-field"></div>
+                </div>
+                <button class="btn w-full px-3 py-2 rounded-xl bg-fuchsia-700 text-white text-sm font-semibold hover:bg-fuchsia-800 mt-2" onclick="runSensResponse()">&#9654; Run response</button>
+                <p class="text-xs text-gray-400 mt-2">Varies one parameter across a range and plots total stored carbon against it.</p>
+              </div>
+
+              <div id="sensctl-influence" class="hidden">
+                <div class="mb-2"><p class="il-input-label mb-1">Vary each group by &plusmn; (%)</p>
+                  <input id="sens-pct" type="number" min="1" max="90" value="20" class="il-input-field"></div>
+                <button class="btn w-full px-3 py-2 rounded-xl bg-fuchsia-700 text-white text-sm font-semibold hover:bg-fuchsia-800" onclick="runSensTornado()">&#9654; Run influence</button>
+                <p class="text-xs text-gray-400 mt-2">Ranks the parameter groups by their influence on the final stored carbon.</p>
+              </div>
+
+              <div id="sensctl-uncertainty" class="hidden">
+                <div class="mb-2"><p class="il-input-label mb-1">Monte Carlo samples</p>
+                  <input id="sens-n" type="number" min="20" max="500" step="10" value="120" class="il-input-field"></div>
+                <button class="btn w-full px-3 py-2 rounded-xl bg-violet-600 text-white text-sm font-semibold hover:bg-violet-700" onclick="runSensMC()">&#9654; Run uncertainty</button>
+                <p class="text-xs text-gray-400 mt-2">Varies all parameter groups together within &plusmn;30% and plots the median with a 5-95% band.</p>
+              </div>
+
+              <div id="sens-status" class="text-sm text-gray-600 mt-3"></div>
+              <div id="sens-progress-wrap" class="w-full bg-gray-100 rounded-full h-2 mt-2 hidden"><div id="sens-progress-bar" class="bg-fuchsia-600 h-2 rounded-full transition-all" style="width:0%"></div></div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-2">
+            <div id="sensplot-response" class="p-4 bg-white rounded-2xl shadow">
+              <h2 class="text-base font-semibold mb-2 text-gray-700">Parameter response - total stored carbon vs the varied parameter</h2>
+              <div id="sens-response-plot" class="border rounded-xl h-96"></div>
+            </div>
+            <div id="sensplot-influence" class="p-4 bg-white rounded-2xl shadow hidden">
+              <h2 class="text-base font-semibold mb-2 text-gray-700">Parameter influence - one-at-a-time</h2>
+              <div id="sens-tornado-plot" class="border rounded-xl h-96"></div>
+            </div>
+            <div id="sensplot-uncertainty" class="p-4 bg-white rounded-2xl shadow hidden">
+              <h2 class="text-base font-semibold mb-2 text-gray-700">Uncertainty band (5-95%)</h2>
+              <div id="sens-mc-plot" class="border rounded-xl h-96"></div>
+            </div>
+          </div>
+        </section>
+      </div>

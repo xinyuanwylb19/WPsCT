@@ -1,0 +1,193 @@
+      <div id="tab-il" class="tab-panel active">
+        <section class="grid lg:grid-cols-3 gap-6">
+
+          <div class="space-y-5 lg:col-span-1">
+
+            <div class="p-4 bg-white rounded-2xl shadow">
+              <h2 class="text-base font-bold text-green-800 mb-3 flex items-center gap-2">
+                Log Dimensions
+              </h2>
+
+              <div class="mb-3">
+                <p class="il-input-label mb-1">Volume estimation method</p>
+                <div class="grid grid-cols-2 gap-2">
+                  <button onclick="setVolMethod('cylinder')" data-method="cylinder"
+                    class="vol-method-btn selected text-xs font-semibold px-2 py-1.5 rounded-lg border-2 border-green-600 bg-green-50 text-green-800 transition-all">
+                    🪵 Cylinder
+                  </button>
+                  <button onclick="setVolMethod('huber')" data-method="huber"
+                    class="vol-method-btn text-xs font-semibold px-2 py-1.5 rounded-lg border-2 border-gray-200 bg-gray-50 text-gray-600 transition-all">
+                    📏 Huber
+                  </button>
+                  <button onclick="setVolMethod('smalian')" data-method="smalian"
+                    class="vol-method-btn text-xs font-semibold px-2 py-1.5 rounded-lg border-2 border-gray-200 bg-gray-50 text-gray-600 transition-all">
+                    📐 Smalian
+                  </button>
+                  <button onclick="setVolMethod('newton')" data-method="newton"
+                    class="vol-method-btn text-xs font-semibold px-2 py-1.5 rounded-lg border-2 border-gray-200 bg-gray-50 text-gray-600 transition-all">
+                    🔬 Newton
+                  </button>
+                </div>
+                <p id="vol-method-desc" class="text-xs text-gray-500 mt-1.5 italic">V = π × r² × L - single diameter, overestimates tapered logs.</p>
+              </div>
+
+              <div id="vol-inputs-cylinder" class="space-y-3">
+                <div class="fldrow">
+                  <p class="il-input-label">Diameter (cm)</p>
+                  <input id="il-diameter" type="number" min="1" max="300" step="0.1" value="30" class="il-input-field" oninput="onIlInputChange()">
+                </div>
+                <div class="fldrow">
+                  <p class="il-input-label">Length (m)</p>
+                  <input id="il-length" type="number" min="0.5" max="50" step="0.1" value="4" class="il-input-field" oninput="onIlInputChange()">
+                </div>
+              </div>
+
+              <div id="vol-inputs-huber" class="space-y-3 hidden">
+                <div class="fldrow">
+                  <p class="il-input-label">Mid-point diameter (cm)</p>
+                  <input id="il-d-mid" type="number" min="1" max="300" step="0.1" value="25" class="il-input-field" oninput="onIlInputChange()">
+                </div>
+                <div class="fldrow">
+                  <p class="il-input-label">Length (m)</p>
+                  <input id="il-length-h" type="number" min="0.5" max="50" step="0.1" value="4" class="il-input-field" oninput="onIlInputChange()">
+                </div>
+              </div>
+
+              <div id="vol-inputs-smalian" class="space-y-3 hidden">
+                <div class="fldrow">
+                  <p class="il-input-label">Butt (large end) diameter (cm)</p>
+                  <input id="il-d-butt" type="number" min="1" max="300" step="0.1" value="35" class="il-input-field" oninput="onIlInputChange()">
+                </div>
+                <div class="fldrow">
+                  <p class="il-input-label">Tip (small end) diameter (cm)</p>
+                  <input id="il-d-tip" type="number" min="0" max="300" step="0.1" value="20" class="il-input-field" oninput="onIlInputChange()">
+                </div>
+                <div class="fldrow">
+                  <p class="il-input-label">Length (m)</p>
+                  <input id="il-length-s" type="number" min="0.5" max="50" step="0.1" value="4" class="il-input-field" oninput="onIlInputChange()">
+                </div>
+              </div>
+
+              <div id="vol-inputs-newton" class="space-y-3 hidden">
+                <div class="fldrow">
+                  <p class="il-input-label">Butt (large end) diameter (cm)</p>
+                  <input id="il-d-butt-n" type="number" min="1" max="300" step="0.1" value="35" class="il-input-field" oninput="onIlInputChange()">
+                </div>
+                <div class="fldrow">
+                  <p class="il-input-label">Mid-point diameter (cm)</p>
+                  <input id="il-d-mid-n" type="number" min="1" max="300" step="0.1" value="28" class="il-input-field" oninput="onIlInputChange()">
+                </div>
+                <div class="fldrow">
+                  <p class="il-input-label">Tip (small end) diameter (cm)</p>
+                  <input id="il-d-tip-n" type="number" min="0" max="300" step="0.1" value="20" class="il-input-field" oninput="onIlInputChange()">
+                </div>
+                <div class="fldrow">
+                  <p class="il-input-label">Length (m)</p>
+                  <input id="il-length-n" type="number" min="0.5" max="50" step="0.1" value="4" class="il-input-field" oninput="onIlInputChange()">
+                </div>
+              </div>
+
+              <div class="space-y-3 mt-3 pt-3 border-t border-gray-100">
+                <div>
+                  <p class="il-input-label">Wood type</p>
+                  <select id="il-woodtype" class="il-input-field" onchange="syncPhysicalDefaults(); onIlInputChange()">
+                    <option value="softwood">Softwood (e.g. Pine, Spruce, Fir)</option>
+                    <option value="hardwood">Hardwood (e.g. Oak, Maple, Birch)</option>
+                  </select>
+                </div>
+                <div class="fldrow">
+                  <p class="il-input-label">Tracking horizon (years)</p>
+                  <input id="il-years" type="number" min="10" max="500" step="1" value="100" class="il-input-field" oninput="onIlInputChange()">
+                </div>
+              </div>
+
+            </div>
+
+            <div class="p-4 bg-white rounded-2xl shadow">
+              <h2 class="text-base font-bold text-green-800 mb-1 flex items-center gap-2">
+                Physical Parameters
+              </h2>
+              <div class="space-y-3">
+                <div class="fldrow">
+                  <p class="il-input-label">Wood density (kg/m³)</p>
+                  <input id="il-density" type="number" min="100" max="1200" step="1" value="450" class="il-input-field" oninput="onIlInputChange()">
+                  <p class="text-xs text-gray-400 mt-0.5">Softwood default: 450 · Hardwood default: 600</p>
+                </div>
+                <div class="fldrow">
+                  <p class="il-input-label">Carbon fraction (0-1)</p>
+                  <input id="il-carbon-frac" type="number" min="0.1" max="0.9" step="0.01" value="0.50" class="il-input-field" oninput="onIlInputChange()">
+                  <p class="text-xs text-gray-400 mt-0.5">Softwood default: 0.50 · Hardwood default: 0.48</p>
+                </div>
+                <button onclick="resetPhysicalParams()" class="text-xs text-indigo-600 hover:underline mt-1">↺ Reset to wood-type defaults</button>
+              </div>
+            </div>
+
+            <div class="p-4 bg-white rounded-2xl shadow">
+              <h2 class="text-base font-bold text-green-800 mb-1 flex items-center gap-2">
+                End-Use Category
+              </h2>
+              <div id="il-product-grid" class="grid grid-cols-2 gap-2">
+                <div class="product-card" data-product="Construction" onclick="selectProduct('Construction')">🏠 Construction</div>
+                <div class="product-card" data-product="Exterior" onclick="selectProduct('Exterior')">🌉 Exterior</div>
+                <div class="product-card" data-product="Household" onclick="selectProduct('Household')">🪑 Household</div>
+                <div class="product-card" data-product="Graphic Paper" onclick="selectProduct('Graphic Paper')">📰 Graphic Paper</div>
+                <div class="product-card" data-product="Household Paper" onclick="selectProduct('Household Paper')">🧻 Household Paper</div>
+                <div class="product-card" data-product="Other Paper" onclick="selectProduct('Other Paper')">📄 Other Paper</div>
+              </div>
+              <div id="il-suggestion-note" class="mt-2 text-xs text-emerald-700 font-medium hidden"></div>
+
+              <div class="mt-3 pt-3 border-t border-gray-100">
+                <p class="il-input-label">Log-to-product conversion efficiency (0-1)</p>
+                <input id="il-efficiency" type="number" min="0.01" max="1.0" step="0.01" value="0.70" class="il-input-field" oninput="onIlInputChange()">
+                <p class="text-xs text-gray-400 mt-0.5" id="il-efficiency-hint">Fraction of log carbon that enters the product.</p>
+                <div class="mt-2 grid grid-cols-2 gap-x-3 gap-y-0.5 text-xs text-gray-500" id="efficiency-defaults-table">
+                </div>
+                <button onclick="resetEfficiency()" class="text-xs text-indigo-600 hover:underline mt-1">↺ Reset to product default</button>
+              </div>
+            </div>
+
+            <div class="p-4 bg-white rounded-2xl shadow">
+              <h2 class="text-base font-bold text-green-800 mb-3 flex items-center gap-2">
+                Run Log Carbon Tracker
+              </h2>
+              <div id="il-param-box" class="mb-3"></div>
+              <div class="flex flex-wrap gap-2">
+                <button id="btn-il-run" class="btn px-4 py-2 rounded-xl bg-green-700 text-white hover:bg-green-800" onclick="runIlTracker()">▶ Run Tracker</button>
+                <button id="btn-il-clear" class="btn px-4 py-2 rounded-xl bg-gray-200 hover:bg-gray-300" onclick="clearIlTracker()">Clear</button>
+              </div>
+              <div id="il-status" class="text-sm text-gray-600 mt-2"></div>
+            </div>
+          </div>
+
+          <div class="space-y-5 lg:col-span-2">
+
+            <div id="il-summary-panel" class="p-4 bg-white rounded-2xl shadow hidden">
+              <h2 class="text-base font-semibold mb-3 text-gray-700">📋 Log Carbon Summary</h2>
+              <div id="il-summary-badges" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+            </div>
+
+            <div id="il-carbon-estimate" class="p-4 bg-white rounded-2xl shadow hidden">
+              <div class="flex items-baseline justify-between mb-3">
+                <h2 class="text-base font-semibold text-gray-700">Estimated Log Carbon</h2>
+                <span class="text-xs text-gray-400">Live preview</span>
+              </div>
+              <div id="il-carbon-display"></div>
+            </div>
+
+            <div class="p-4 bg-white rounded-2xl shadow">
+              <h2 class="text-lg font-semibold mb-2">Carbon Retained Over Time</h2>
+              <div id="il-plot-area" class="border rounded-xl h-96"></div>
+            </div>
+
+            <div class="p-4 bg-white rounded-2xl shadow">
+              <h2 class="text-base font-semibold mb-2 text-gray-700">Results Table</h2>
+              <div id="il-results-preview" class="overflow-auto border rounded-xl p-2 max-h-64 text-xs"></div>
+              <div class="mt-3">
+                <a id="il-download-link" class="hidden px-3 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 text-sm" download="LogCarbon_Results.csv">Download Results</a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- 2. Primary Products tab -->

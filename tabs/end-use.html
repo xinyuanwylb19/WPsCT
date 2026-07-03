@@ -1,0 +1,115 @@
+      <div id="tab-eup" class="tab-panel">
+        <section class="grid lg:grid-cols-3 gap-6">
+
+          <div class="space-y-4 lg:col-span-1">
+
+            <div class="p-4 bg-white rounded-2xl shadow">
+              <h2 class="text-base font-bold text-indigo-800 mb-3 flex items-center gap-2">
+                Data Source
+              </h2>
+              <div class="space-y-1 text-sm">
+                <label class="flex items-start gap-2 cursor-pointer p-2 rounded-xl hover:bg-indigo-50 transition-colors">
+                  <input type="radio" name="dataChoice" id="rb-me" class="h-4 w-4 accent-indigo-600 mt-0.5" checked>
+                  <div><span class="font-semibold text-gray-800">Maine, USA</span></div>
+                </label>
+                <label class="flex items-start gap-2 cursor-pointer p-2 rounded-xl hover:bg-indigo-50 transition-colors">
+                  <input type="radio" name="dataChoice" id="rb-us" class="h-4 w-4 accent-indigo-600 mt-0.5">
+                  <div><span class="font-semibold text-gray-800">United States</span></div>
+                </label>
+                <label class="flex items-start gap-2 cursor-pointer p-2 rounded-xl hover:bg-indigo-50 transition-colors">
+                  <input type="radio" name="dataChoice" id="rb-upload-data" class="h-4 w-4 accent-indigo-600 mt-0.5">
+                  <div><span class="font-semibold text-gray-800">Upload Custom Data</span></div>
+                </label>
+                <input id="file-data" type="file" accept=".csv" class="mt-1 block w-full text-sm text-gray-700 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" disabled>
+              </div>
+              <div class="mt-3 pt-3 border-t border-gray-100 grid grid-cols-2 gap-3">
+                <div>
+                  <p class="text-xs font-semibold text-gray-500 tracking-wide mb-1.5">Input Units</p>
+                  <div class="space-y-1 text-sm">
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="inputUnits" id="u-lbs" class="h-4 w-4 accent-indigo-600"><span>lbs</span></label>
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="inputUnits" id="u-kg"  class="h-4 w-4 accent-indigo-600" checked><span>kg</span></label>
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="inputUnits" id="u-mt"  class="h-4 w-4 accent-indigo-600"><span>Mt</span></label>
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="inputUnits" id="u-tgc" class="h-4 w-4 accent-indigo-600"><span>Tg C</span></label>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold text-gray-500 tracking-wide mb-1.5">Plot Units</p>
+                  <div class="space-y-1 text-sm">
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="plotUnits" id="p-kg"  class="h-4 w-4 accent-indigo-600"><span>kg</span></label>
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="plotUnits" id="p-tgc" class="h-4 w-4 accent-indigo-600" checked><span>Tg C</span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-4 bg-white rounded-2xl shadow">
+              <h2 class="text-base font-bold text-indigo-800 mb-3 flex items-center gap-2">
+                Model Parameters
+              </h2>
+              <div class="space-y-1 text-sm">
+                <label class="flex items-start gap-2 cursor-pointer p-2 rounded-xl hover:bg-indigo-50 transition-colors">
+                  <input type="radio" name="paraChoice" id="rb-default-para" class="h-4 w-4 accent-indigo-600 mt-0.5" checked>
+                  <div><span class="font-semibold text-gray-800">Default Parameters</span></div>
+                </label>
+                <label class="flex items-start gap-2 cursor-pointer p-2 rounded-xl hover:bg-indigo-50 transition-colors">
+                  <input type="radio" name="paraChoice" id="rb-upload-para" class="h-4 w-4 accent-indigo-600 mt-0.5">
+                  <div><span class="font-semibold text-gray-800">Upload Custom Parameters</span></div>
+                </label>
+                <input id="file-paras" type="file" accept=".csv" class="mt-1 block w-full text-sm text-gray-700 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" disabled>
+                <button onclick="downloadParaTemplate()" class="mt-1 text-sm text-indigo-600 hover:text-indigo-800 underline">⬇ Download default parameters</button>
+              </div>
+            </div>
+
+            <div class="p-4 bg-white rounded-2xl shadow">
+              <h2 class="text-base font-bold text-indigo-800 mb-3 flex items-center gap-2">
+                Run Tracker
+              </h2>
+              <div class="space-y-2">
+                <button id="btn-run"  class="btn w-full px-3 py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition-colors">▶ Run Tracker</button>
+                <div class="grid grid-cols-2 gap-2">
+                  <button id="btn-plot-data"    class="btn px-3 py-2 rounded-xl bg-sky-600 text-white text-sm font-semibold hover:bg-sky-700 transition-colors">📊 Plot Input Data</button>
+                  <button id="btn-plot-storage" class="btn px-3 py-2 rounded-xl bg-violet-600 text-white text-sm font-semibold hover:bg-violet-700 transition-colors">📈 Plot Carbon Stock</button>
+                </div>
+                <button id="btn-clear" class="btn w-full px-3 py-2 rounded-xl bg-gray-100 text-gray-600 text-sm hover:bg-gray-200 transition-colors border border-gray-200">✕ Clear All</button>
+              </div>
+              <div id="status"   class="text-sm text-indigo-700 font-medium mt-3"></div>
+              <div id="progress" class="text-xs text-gray-400 mt-1"></div>
+            </div>
+
+          </div>
+
+          <div class="space-y-5 lg:col-span-2">
+
+            <div id="eup-summary-panel" class="hidden p-4 bg-white rounded-2xl shadow">
+              <h2 class="text-sm font-semibold text-gray-600 tracking-wide mb-3">Carbon Stock - Latest Year</h2>
+              <div id="eup-summary-badges" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+            </div>
+
+            <div class="p-4 bg-white rounded-2xl shadow">
+              <div class="flex items-center justify-between mb-3">
+                <h2 class="text-base font-semibold text-gray-700">Annual Wood Products Production</h2>
+                <span class="text-xs text-gray-400 bg-gray-100 rounded-full px-2 py-0.5">Input Data</span>
+              </div>
+              <div id="plot-data-area" class="rounded-xl bg-gray-50" style="height:380px"></div>
+            </div>
+
+            <div class="p-4 bg-white rounded-2xl shadow">
+              <div class="flex items-center justify-between mb-3">
+                <h2 class="text-base font-semibold text-gray-700">Carbon Storage by Pool</h2>
+                <span class="text-xs text-gray-400 bg-gray-100 rounded-full px-2 py-0.5">Model Output</span>
+              </div>
+              <div id="plot-storage-area" class="rounded-xl bg-gray-50" style="height:380px"></div>
+            </div>
+
+            <div class="p-4 bg-white rounded-2xl shadow">
+              <h2 class="text-base font-semibold mb-2 text-gray-700">📋 Results Table</h2>
+              <div id="results-preview" class="overflow-auto rounded-xl p-2 max-h-72 text-xs border border-gray-100"></div>
+              <div class="mt-3">
+                <a id="download-link" class="hidden inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition-colors" download="WPsCT_Results.csv">⬇ Download Results</a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- 4. Global WPs Carbon tab -->

@@ -1,0 +1,203 @@
+      <div id="tab-gwp" class="tab-panel">
+
+        <div class="mb-4 flex items-center gap-3 flex-wrap bg-white rounded-2xl shadow p-3">
+          <span class="text-base font-bold text-gray-600">Accounting approach:</span>
+          <div class="flex rounded-lg overflow-hidden border border-gray-200">
+            <button id="gl-appr-consumption" onclick="glSetApproach('consumption')" class="px-3 py-1 transition-colors text-xs font-semibold bg-indigo-600 text-white">Consumption</button>
+            <button id="gl-appr-production" onclick="glSetApproach('production')" class="px-3 py-1 transition-colors text-xs font-semibold bg-white text-gray-500 hover:bg-indigo-50">Production</button>
+          </div>
+          <span class="text-sm text-gray-500" id="gl-appr-desc">Consumption = production + imports - exports (carbon held in-country).</span>
+          <div class="flex items-center gap-2 ml-auto">
+            <span class="text-base font-bold text-gray-600">Unit:</span>
+            <div class="flex rounded-lg overflow-hidden border border-gray-200 text-xs font-semibold">
+              <button id="gl-u-tg" onclick="glSetUnit('Tg')" class="px-2 py-1 bg-indigo-600 text-white transition-colors">Tg C</button>
+              <button id="gl-u-pg" onclick="glSetUnit('Pg')" class="px-2 py-1 bg-white text-gray-500 hover:bg-indigo-50 transition-colors">Pg C</button>
+              <button id="gl-u-kg" onclick="glSetUnit('kg')" class="px-2 py-1 bg-white text-gray-500 hover:bg-indigo-50 transition-colors">kg C</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-5 mb-5">
+
+          <div class="lg:col-span-2 bg-white rounded-2xl shadow p-4">
+            <div class="flex items-center justify-between mb-2">
+              <div>
+                <h3 class="text-sm font-bold text-gray-800">Global Wood Products Carbon Storage</h3>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap justify-end">
+                <select id="gl-map-metric" onchange="glUpdateMap()"
+                  class="text-xs border border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                  <option value="inuse">Total In-Use Stock</option>
+                  <option value="lf">Landfill Stock</option>
+                </select>
+                <select id="gl-map-norm" onchange="glUpdateMap()" title="Normalization"
+                  class="text-xs border border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                  <option value="absolute">Absolute</option>
+                  <option value="percapita">Per capita</option>
+                  <option value="perarea">Per forest area</option>
+                </select>
+                <label class="flex items-center gap-1 text-xs text-gray-600 cursor-pointer" title="Shade the change between two years">
+                  <input type="checkbox" id="gl-map-diff" class="accent-indigo-600" onchange="glToggleDiff()"> Difference
+                </label>
+                <span id="gl-map-yearA-wrap" class="items-center gap-1" style="display:none">
+                  <span class="text-xs text-gray-400">from</span>
+                  <input id="gl-map-yearA" type="range" min="1961" max="2024" value="1990" oninput="glSetMapYearA(this.value)" class="w-20" title="Baseline year">
+                  <span id="gl-map-yearA-lbl" class="text-xs font-semibold text-gray-700 w-8 text-center">1990</span>
+                  <span class="text-xs text-gray-400">to</span>
+                </span>
+                <input id="gl-map-year" type="range" min="1961" max="2024" value="2024" oninput="glSetMapYear(this.value)" class="w-24" title="Map year">
+                <span id="gl-map-year-lbl" class="text-xs font-semibold text-gray-700 w-8 text-center">2024</span>
+                <button onclick="glResetMapView()" class="text-xs px-2 py-1 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50" title="Reset the map to the original view">⟲ Reset view</button>
+              </div>
+            </div>
+            <div id="gl-map" style="height:360px;"></div>
+            <div id="gl-map-status" class="text-xs text-gray-400 mt-1 text-center min-h-[1rem]">Loading country data&hellip;</div>
+          </div>
+
+          <div class="lg:col-span-1 space-y-4">
+
+            <div class="bg-white rounded-2xl shadow p-4">
+              <h3 class="text-sm font-bold text-indigo-800 mb-3">Select Location</h3>
+
+              <div class="flex rounded-xl overflow-hidden border border-gray-200 mb-3 text-xs font-semibold">
+                <button id="gl-tab-country" onclick="glSwitchListTab('country')"
+                  class="flex-1 py-1.5 bg-indigo-600 text-white transition-colors">Country</button>
+                <button id="gl-tab-region" onclick="glSwitchListTab('region')"
+                  class="flex-1 py-1.5 bg-white text-gray-500 hover:bg-indigo-50 transition-colors">Region</button>
+                <button id="gl-tab-custom" onclick="glSwitchListTab('custom')"
+                  class="flex-1 py-1.5 bg-white text-gray-500 hover:bg-indigo-50 transition-colors">Custom</button>
+              </div>
+
+              <div id="gl-country-panel">
+                <select id="gl-country-select" size="7" onchange="glSelectLocation(this.value)"
+                  class="w-full text-sm border border-gray-200 rounded-xl p-1 focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-gray-50">
+
+                </select>
+              </div>
+              <div id="gl-region-panel" class="hidden">
+                <select id="gl-region-select" size="7" onchange="glSelectLocation(this.value)"
+                  class="w-full text-sm border border-gray-200 rounded-xl p-1 focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-gray-50">
+
+                </select>
+              </div>
+              <div id="gl-custom-panel" class="hidden">
+                <select id="gl-custom-select" multiple size="6"
+                  class="w-full text-sm border border-gray-200 rounded-xl p-1 focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-gray-50"></select>
+                <p class="text-xs text-gray-400 mt-1">Ctrl/Cmd-click to pick several, then sum.</p>
+                <button onclick="glBuildCustomGroup()" class="mt-2 w-full text-xs px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700">Build custom group (sum)</button>
+              </div>
+            </div>
+
+            <div id="gl-kpi-box" class="bg-white rounded-2xl shadow p-4 hidden">
+              <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3" id="gl-kpi-title">-</h3>
+              <div class="grid grid-cols-2 gap-2">
+                <div class="rounded-xl bg-indigo-50 p-2 text-center">
+                  <p class="text-xs text-indigo-400 font-medium">In-Use Stock</p>
+                  <p id="gl-kpi-inuse" class="text-base font-bold text-indigo-700">-</p>
+                </div>
+                <div class="rounded-xl bg-amber-50 p-2 text-center">
+                  <p class="text-xs text-amber-400 font-medium">Landfill Stock</p>
+                  <p id="gl-kpi-lf" class="text-base font-bold text-amber-700">-</p>
+                </div>
+                <div class="rounded-xl bg-yellow-50 p-2 text-center">
+                  <p class="text-xs text-yellow-600 font-medium">Biochar Stock</p>
+                  <p id="gl-kpi-biochar" class="text-base font-bold text-yellow-800">-</p>
+                </div>
+                <div class="rounded-xl bg-orange-50 p-2 text-center">
+                  <p class="text-xs text-orange-400 font-medium">Fuel Emissions</p>
+                  <p id="gl-kpi-emis" class="text-base font-bold text-orange-600">-</p>
+                </div>
+              </div>
+              <p class="text-xs text-gray-300 text-right mt-2" id="gl-kpi-year-note">-</p>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-4 mb-5">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-sm font-bold text-gray-800">Top countries - <span id="gl-rank-metric-lbl">In-Use Stock</span> <span class="text-gray-400 font-normal">(<span id="gl-rank-year-lbl">2024</span>)</span></h3>
+            <select id="gl-rank-n" onchange="glUpdateRanking()" class="text-xs border border-gray-200 rounded-lg px-2 py-1">
+              <option value="10">Top 10</option>
+              <option value="15" selected>Top 15</option>
+              <option value="20">Top 20</option>
+              <option value="30">Top 30</option>
+            </select>
+          </div>
+          <div id="gl-ranking" style="height:340px;"></div>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-5 mb-5">
+
+          <div class="bg-white rounded-2xl shadow p-4">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-sm font-bold text-gray-800">Carbon Storage Over Time</h3>
+              <div class="flex items-center gap-2">
+                <button id="gl-stock-mode" onclick="glToggleStockMode()" class="text-xs px-2 py-1 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50">Stacked</button>
+              </div>
+            </div>
+            <div id="gl-chart-stock" style="height:280px;"></div>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow p-4">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-sm font-bold text-gray-800">Carbon Emissions &amp; Decay</h3>
+              <div class="flex flex-wrap gap-1 text-xs">
+                <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="glv-emis" class="accent-indigo-600"> Biofuel Emis.</label>
+                <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="glv-lfdecay" class="accent-indigo-600" checked> LF Decay</label>
+                <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="glv-bcdecay" class="accent-indigo-600"> Biochar Decay</label>
+              </div>
+            </div>
+            <div id="gl-chart-emis" style="height:280px;"></div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-4 mb-5">
+          <div class="flex items-center justify-between mb-1">
+            <h3 class="text-sm font-bold text-gray-800">Carbon-flow Sankey <span id="gl-sankey-title" class="font-normal text-gray-400"></span></h3>
+            <label class="flex items-center gap-1 text-sm text-gray-600 cursor-pointer"><input type="checkbox" id="gl-sankey-bio" class="accent-indigo-600" onchange="glToggleSankeyBio()"> Include biofuel</label>
+          </div>
+          <p id="gl-sankey-sub" class="text-xs text-gray-500 mb-2"></p>
+          <div id="gl-sankey" style="height:430px;"></div>
+          <p class="text-xs text-gray-400 mt-2">Production → in-use → disposal → {recycling, landfill}; biofuel → {biochar, emissions}. Widths ∝ cumulative carbon mass. The diagram is mass-balanced: all inputs = end-of-period stocks + recycled + cumulative emissions.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-4 mb-5">
+          <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
+            <h3 class="text-sm font-bold text-gray-800">Validation - model vs reference <span id="gl-val-title" class="font-normal text-gray-400"></span></h3>
+            <div class="flex items-center gap-2 text-xs">
+              <span class="text-gray-500">Model metric:</span>
+              <select id="gl-val-metric" onchange="glValRefresh()" class="border border-gray-200 rounded-lg px-2 py-1">
+                <option value="inuse">In-use stock</option>
+                <option value="inuse_lf">In-use + landfill</option>
+                <option value="total">Total stored</option>
+              </select>
+              <label class="px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 font-semibold hover:bg-indigo-100 cursor-pointer">⬆ Upload reference<input id="gl-val-file" type="file" accept=".csv" class="hidden" onchange="glValUpload(event)"></label>
+              <button onclick="glValExample()" class="px-3 py-1.5 rounded-lg bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200">Load example</button>
+              <button onclick="glValClear()" class="px-3 py-1.5 rounded-lg bg-gray-100 text-gray-500 hover:bg-gray-200">Clear</button>
+            </div>
+          </div>
+          <div id="gl-val-plot" style="height:300px;"></div>
+          <p id="gl-val-stats" class="text-xs text-gray-500 mt-2">Select a country, then upload a reference series (a table with Year, Value columns) or load the example to compare against the modeled curve.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-bold text-gray-800">Summary Table <span id="gl-table-title" class="font-normal text-gray-400"></span></h3>
+            <div class="flex gap-2">
+              <button onclick="glExportPanel()"
+                class="text-xs px-3 py-1.5 rounded-lg bg-fuchsia-50 text-fuchsia-700 font-semibold hover:bg-fuchsia-100 transition-colors" title="Compose the stock, emissions and Sankey charts into one PNG">⬇ Figure panel (PNG)</button>
+              <button onclick="glDownloadAll()"
+                class="text-xs px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 font-semibold hover:bg-emerald-100 transition-colors">⬇ All countries</button>
+              <button onclick="glDownloadCSV()" id="gl-dl-btn"
+                class="hidden text-xs px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 font-semibold hover:bg-indigo-100 transition-colors">⬇ This location</button>
+            </div>
+          </div>
+          <div id="gl-table" class="overflow-x-auto">
+            
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 5. User Guide tab -->
