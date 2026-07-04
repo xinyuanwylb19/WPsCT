@@ -162,32 +162,8 @@
           <p class="text-xs text-gray-400 mt-2">Production → in-use → disposal → {recycling, landfill}; biofuel → {biochar, emissions}. Widths ∝ cumulative carbon mass. The diagram is mass-balanced: all inputs = end-of-period stocks + recycled + cumulative emissions.</p>
         </div>
 
-        <div class="bg-white rounded-2xl shadow p-4 mb-5">
-          <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
-            <h3 class="text-sm font-bold text-gray-800">Validation - model vs reference <span id="gl-val-title" class="font-normal text-gray-400"></span></h3>
-            <div class="flex items-center gap-2 text-xs">
-              <span class="text-gray-500">Model metric:</span>
-              <select id="gl-val-metric" onchange="glValRefresh()" class="border border-gray-200 rounded-lg px-2 py-1">
-                <option value="inuse">In-use stock</option>
-                <option value="inuse_lf">In-use + landfill</option>
-                <option value="total">Total stored</option>
-              </select>
-              <select id="gl-val-lit" onchange="glValLoadLit(this.value)" class="border border-gray-200 rounded-lg px-2 py-1">
-                <option value="">Published estimate…</option>
-                <option value="world">Global - Zhang et al. (2020)</option>
-                <option value="usa">USA - USDA/EPA inventory</option>
-                <option value="china">China - Zhao et al. (2023)</option>
-              </select>
-              <label class="px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 font-semibold hover:bg-indigo-100 cursor-pointer">⬆ Upload reference<input id="gl-val-file" type="file" accept=".csv" class="hidden" onchange="glValUpload(event)"></label>
-              <button onclick="glValExample()" class="px-3 py-1.5 rounded-lg bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200">Load example</button>
-              <button onclick="glValClear()" class="px-3 py-1.5 rounded-lg bg-gray-100 text-gray-500 hover:bg-gray-200">Clear</button>
-            </div>
-          </div>
-          <div id="gl-val-plot" style="height:300px;"></div>
-          <p id="gl-val-stats" class="text-xs text-gray-500 mt-2">Select a country, then upload a reference series (a table with Year, Value columns) or load the example to compare against the modeled curve.</p>
-        </div>
 
-        <div class="bg-white rounded-2xl shadow p-4">
+        <div class="bg-white rounded-2xl shadow p-4 mb-5">
           <div class="flex items-center justify-between mb-3">
             <h3 class="text-sm font-bold text-gray-800">Summary Table <span id="gl-table-title" class="font-normal text-gray-400"></span></h3>
             <div class="flex gap-2">
@@ -202,6 +178,44 @@
           <div id="gl-table" class="overflow-x-auto">
             
           </div>
+        </div>
+
+<div class="bg-white rounded-2xl shadow p-4 mb-5">
+          <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
+            <h3 class="text-sm font-bold text-gray-800">Validation - model vs reference <span id="gl-val-title" class="font-normal text-gray-400"></span></h3>
+            <div class="flex items-center gap-2 text-xs">
+              <span class="text-gray-500">Model metric:</span>
+              <select id="gl-val-metric" onchange="glValRefresh()" class="border border-gray-200 rounded-lg px-2 py-1">
+                <option value="inuse">In-use stock</option>
+                <option value="inuse_lf">In-use + landfill</option>
+                <option value="total">Total stored</option>
+              </select>
+              <select id="gl-val-lit" onchange="glValLoadLit(this.value)" class="border border-gray-200 rounded-lg px-2 py-1">
+                <option value="">Published estimate…</option>
+                <option value="world">Global - Zhang et al. (2020)</option>
+                <option value="usa">USA - USDA/EPA inventory</option>
+                <option value="china">China, end-use - Zhao et al. (2023)</option>
+                <option value="china_sr">China, wood - Scientific Reports (2023)</option>
+                <option value="japan">Japan - Hashimoto &amp; Moriguchi (2004)</option>
+              </select>
+              <label class="px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 font-semibold hover:bg-indigo-100 cursor-pointer">⬆ Upload reference<input id="gl-val-file" type="file" accept=".csv" class="hidden" onchange="glValUpload(event)"></label>
+              <button onclick="glValExample()" class="px-3 py-1.5 rounded-lg bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200">Load example</button>
+              <button onclick="glValClear()" class="px-3 py-1.5 rounded-lg bg-gray-100 text-gray-500 hover:bg-gray-200">Clear</button>
+            </div>
+          </div>
+          <div id="gl-val-plot" style="height:300px;"></div>
+          <p id="gl-val-stats" class="text-xs text-gray-500 mt-2">Select a country, then upload a reference series (a table with Year, Value columns) or load the example to compare against the modeled curve.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-4">
+          <h3 class="text-sm font-bold text-gray-800">Validation references</h3>
+          <ol class="list-decimal list-inside text-xs text-gray-600 space-y-1 mt-2">
+            <li>Zhang, X., Chen, J., Dias, A.C. &amp; Yang, H. (2020). Improving carbon stock estimates for in-use harvested wood products by linking production and consumption - a global case study. <em>Environmental Science &amp; Technology</em>, 54(5).</li>
+            <li>Zhao, J. et al. (2023). Exploring plausible contributions of end-use harvested wood products to store atmospheric carbon in China. <em>Biomass and Bioenergy</em>, 177, 106934.</li>
+            <li>Spatiotemporal trends of carbon stock in wood and bamboo products in China during 1987-2020 (2023). <em>Scientific Reports</em>, 13.</li>
+            <li>Hashimoto, S. &amp; Moriguchi, Y. (2004). National carbon stock of harvested wood products in Japan (citation to be confirmed).</li>
+            <li>U.S. EPA. Inventory of U.S. Greenhouse Gas Emissions and Sinks: Land Use, Land-Use Change, and Forestry (Harvested Wood Products).</li>
+          </ol>
         </div>
 
       </div>

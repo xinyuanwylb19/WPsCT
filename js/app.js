@@ -859,15 +859,21 @@ function statTile(label, value){
         };
         // Published literature anchor points for cross-comparison (values in kg C; boundaries differ from this model).
         const GL_LIT_REFS = {
-          world: { location:'World', metric:'inuse', label:'Published: Zhang et al. (2020)',
-                   note:'Global in-use HWP, cumulative since 1992 (narrower baseline than this model)',
-                   byYear:{ 2015: 2938e9 } },
-          usa:   { location:'United States of America', metric:'inuse', label:'Published: USDA / EPA inventory',
-                   note:'US in-use HWP stock, 1990 and 2019 (different baseline and boundary)',
-                   byYear:{ 1990: 1246e9, 2019: 1532e9 } },
-          china: { location:'China, mainland', metric:'inuse', label:'Published: Zhao et al. (2023)',
-                   note:'China end-use HWP, accumulated 1961-2020',
-                   byYear:{ 2020: 893e9 } }
+          world:    { location:'World', metric:'inuse', label:'Published: Zhang et al. (2020)',
+                      note:'Global in-use HWP, cumulative since 1992 (narrower baseline than this model)',
+                      byYear:{ 2015: 2938e9 } },
+          usa:      { location:'United States of America', metric:'inuse', label:'Published: USDA / EPA inventory',
+                      note:'US in-use HWP stock, 2019 (baseline and boundary differ)',
+                      byYear:{ 2019: 1532e9 } },
+          china:    { location:'China, mainland', metric:'inuse', label:'Published: Zhao et al. (2023)',
+                      note:'China end-use HWP, accumulated 1961-2020',
+                      byYear:{ 2020: 893e9 } },
+          china_sr: { location:'China, mainland', metric:'inuse', label:'Published: Scientific Reports (2023)',
+                      note:'China wood products (excludes bamboo), production approach, 1987-2020',
+                      byYear:{ 2020: 328.7e9 } },
+          japan:    { location:'Japan', metric:'inuse', label:'Published: Hashimoto and Moriguchi (2004)',
+                      note:'Japan HWP stock, 1990 and 2000 (production approach)',
+                      byYear:{ 1990: 284e9, 2000: 338e9 } }
         };
         window.glValLoadLit = async function(key){
           if(!key) return;
