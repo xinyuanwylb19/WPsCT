@@ -1,0 +1,145 @@
+ParameterSet,Product,Variable,Parameter,Notes
+developed,Biofuel,efficiency,1,Combustion efficiency (fraction of C emitted as CO2)
+developed,Biochar,decay_1,0.007,Biochar decay pool-size coefficient
+developed,Biochar,decay_2,0.0003,Biochar decay log-stock coefficient
+developed,Construction,disposal_1,0.133,Disposal rate shape parameter (Gaussian bell amplitude)
+developed,Construction,disposal_2,0.028,Disposal rate shape parameter (Gaussian bell width)
+developed,Construction,disposal_3,80,Mean service life (years) - developed: long-lived construction
+developed,Construction,recycle_1,0.085,Recycling rate base (fraction at year 0)
+developed,Construction,recycle_2,0.015,Recycling rate log-time coefficient
+developed,Exterior,disposal_1,0.326,Disposal rate shape parameter
+developed,Exterior,disposal_2,0.041,Disposal rate shape parameter
+developed,Exterior,disposal_3,25,Mean service life (years) - poles/ties/fencing in temperate climate
+developed,Household,disposal_1,0.265,Disposal rate shape parameter
+developed,Household,disposal_2,0.031,Disposal rate shape parameter
+developed,Household,disposal_3,30,Mean service life (years) - furniture in developed markets
+developed,Household,recycle_1,0.085,Recycling rate base
+developed,Household,recycle_2,0.015,Recycling rate log-time coefficient
+developed,Graphic Paper,disposal_1,1.006,Disposal rate bell amplitude
+developed,Graphic Paper,disposal_2,0.0925,Disposal rate bell width (corrected: integral=1.0 for dp3=6)
+developed,Graphic Paper,disposal_3,6,Mean service life (years) - books/files in libraries/offices
+developed,Graphic Paper,recycle_1,0.225,Recycling rate base - high paper recycling in developed nations
+developed,Graphic Paper,recycle_2,0.027,Recycling rate log-time coefficient
+developed,Other Paper,disposal_1,6.036,Disposal rate bell amplitude
+developed,Other Paper,disposal_2,0.555,Disposal rate bell width (corrected: integral=1.0 for dp3=1)
+developed,Other Paper,disposal_3,1,Mean service life (years) - newsprint/packaging short-lived
+developed,Other Paper,recycle_1,0.225,Recycling rate base
+developed,Other Paper,recycle_2,0.027,Recycling rate log-time coefficient
+developed,Household Paper,disposal_1,12.036,Disposal rate bell amplitude
+developed,Household Paper,disposal_2,1.1008,Disposal rate bell width (corrected: integral=1.0 for dp3=0.5)
+developed,Household Paper,disposal_3,0.5,Mean service life (years) - tissue/sanitary paper
+developed,Landfill,con_decay1,0.997,Landfill survival lognormal mu - construction wood
+developed,Landfill,con_decay2,30,Landfill survival lognormal sigma - construction (slow decay in dry landfills)
+developed,Landfill,ext_decay1,1.178,Landfill survival lognormal mu - exterior wood
+developed,Landfill,ext_decay2,20,Landfill survival lognormal sigma - exterior wood
+developed,Landfill,hou_decay1,1.329,Landfill survival lognormal mu - household wood
+developed,Landfill,hou_decay2,15,Landfill survival lognormal sigma - household wood
+developed,Landfill,pap_decay1,0.821,Landfill survival lognormal mu - paper
+developed,Landfill,pap_decay2,5,Landfill survival lognormal sigma - paper (faster decay)
+emerging,Biofuel,efficiency,1,Combustion efficiency
+emerging,Biochar,decay_1,0.008,Slightly faster biochar decay in warmer/wetter emerging climates
+emerging,Biochar,decay_2,0.0004,Biochar decay log-stock coefficient
+emerging,Construction,disposal_1,0.154,Scaled from developed: (80/60)^0.5 x 0.133
+emerging,Construction,disposal_2,0.032,Scaled from developed: (80/60)^0.5 x 0.028
+emerging,Construction,disposal_3,60,Mean service life (years) - shorter in emerging markets (less maintenance)
+emerging,Construction,recycle_1,0.060,Lower recycling rate in emerging economies
+emerging,Construction,recycle_2,0.010,Recycling rate log-time coefficient
+emerging,Exterior,disposal_1,0.384,Scaled from developed: (25/18)^0.5 x 0.326
+emerging,Exterior,disposal_2,0.048,Scaled from developed: (25/18)^0.5 x 0.041
+emerging,Exterior,disposal_3,18,Mean service life (years) - shorter exterior life in emerging climates
+emerging,Household,disposal_1,0.309,Scaled from developed: (30/22)^0.5 x 0.265
+emerging,Household,disposal_2,0.036,Scaled from developed: (30/22)^0.5 x 0.031
+emerging,Household,disposal_3,22,Mean service life (years) - furniture in emerging markets
+emerging,Household,recycle_1,0.055,Lower recycling in emerging economies
+emerging,Household,recycle_2,0.010,Recycling rate log-time coefficient
+emerging,Graphic Paper,disposal_1,1.006,Same shape as developed
+emerging,Graphic Paper,disposal_2,0.0664,Disposal rate bell width (corrected: integral=1.0 for dp3=5)
+emerging,Graphic Paper,disposal_3,5,Slightly shorter graphic paper lifespan
+emerging,Graphic Paper,recycle_1,0.150,Moderate paper recycling
+emerging,Graphic Paper,recycle_2,0.020,Recycling rate log-time coefficient
+emerging,Other Paper,disposal_1,6.036,Disposal rate bell amplitude
+emerging,Other Paper,disposal_2,0.555,Disposal rate bell width (corrected: integral=1.0 for dp3=1)
+emerging,Other Paper,disposal_3,1,Mean service life (years)
+emerging,Other Paper,recycle_1,0.150,Moderate recycling
+emerging,Other Paper,recycle_2,0.020,Recycling rate log-time coefficient
+emerging,Household Paper,disposal_1,12.036,Disposal rate bell amplitude
+emerging,Household Paper,disposal_2,1.1008,Disposal rate bell width (corrected: integral=1.0 for dp3=0.5)
+emerging,Household Paper,disposal_3,0.5,Mean service life (years)
+emerging,Landfill,con_decay1,0.997,Landfill survival lognormal mu
+emerging,Landfill,con_decay2,25,Shorter sigma: moderate temperature/moisture accelerates decay
+emerging,Landfill,ext_decay1,1.178,Landfill survival lognormal mu
+emerging,Landfill,ext_decay2,15,Shorter sigma for exterior wood
+emerging,Landfill,hou_decay1,1.329,Landfill survival lognormal mu
+emerging,Landfill,hou_decay2,12,Shorter sigma for household wood
+emerging,Landfill,pap_decay1,0.821,Landfill survival lognormal mu - paper
+emerging,Landfill,pap_decay2,2,Faster paper decay in warmer/less-controlled landfills (emerging economies)
+tropical_developing,Biofuel,efficiency,1,Combustion efficiency
+tropical_developing,Biochar,decay_1,0.012,Faster biochar decay in hot/wet tropical soils
+tropical_developing,Biochar,decay_2,0.0006,Biochar decay log-stock coefficient
+tropical_developing,Construction,disposal_1,0.188,Scaled: (80/40)^0.5 x 0.133
+tropical_developing,Construction,disposal_2,0.040,Scaled: (80/40)^0.5 x 0.028
+tropical_developing,Construction,disposal_3,40,Mean service life (years) - rapid decay in tropical humid climate
+tropical_developing,Construction,recycle_1,0.020,Very low recycling in tropical developing countries
+tropical_developing,Construction,recycle_2,0.005,Recycling rate log-time coefficient
+tropical_developing,Exterior,disposal_1,0.471,Scaled: (25/12)^0.5 x 0.326
+tropical_developing,Exterior,disposal_2,0.059,Scaled: (25/12)^0.5 x 0.041
+tropical_developing,Exterior,disposal_3,12,Mean service life (years) - rapid exterior decay in tropics (termites/rot)
+tropical_developing,Household,disposal_1,0.375,Scaled: (30/15)^0.5 x 0.265
+tropical_developing,Household,disposal_2,0.044,Scaled: (30/15)^0.5 x 0.031
+tropical_developing,Household,disposal_3,15,Mean service life (years) - short furniture lifespan in tropics
+tropical_developing,Household,recycle_1,0.020,Very low recycling
+tropical_developing,Household,recycle_2,0.005,Recycling rate log-time coefficient
+tropical_developing,Graphic Paper,disposal_1,1.006,Disposal rate bell amplitude
+tropical_developing,Graphic Paper,disposal_2,0.0444,Disposal rate bell width (corrected: integral=1.0 for dp3=4)
+tropical_developing,Graphic Paper,disposal_3,4,Short graphic paper lifespan in humid tropics
+tropical_developing,Graphic Paper,recycle_1,0.080,Low paper recycling
+tropical_developing,Graphic Paper,recycle_2,0.010,Recycling rate log-time coefficient
+tropical_developing,Other Paper,disposal_1,6.036,Disposal rate bell amplitude
+tropical_developing,Other Paper,disposal_2,0.555,Disposal rate bell width (corrected: integral=1.0 for dp3=1)
+tropical_developing,Other Paper,disposal_3,1,Mean service life (years)
+tropical_developing,Other Paper,recycle_1,0.080,Low recycling
+tropical_developing,Other Paper,recycle_2,0.010,Recycling rate log-time coefficient
+tropical_developing,Household Paper,disposal_1,12.036,Disposal rate bell amplitude
+tropical_developing,Household Paper,disposal_2,1.1008,Disposal rate bell width (corrected: integral=1.0 for dp3=0.5)
+tropical_developing,Household Paper,disposal_3,0.5,Mean service life (years)
+tropical_developing,Landfill,con_decay1,0.997,Landfill survival lognormal mu
+tropical_developing,Landfill,con_decay2,15,Short sigma: hot/wet tropics strongly accelerate decay
+tropical_developing,Landfill,ext_decay1,1.178,Landfill survival lognormal mu
+tropical_developing,Landfill,ext_decay2,8,Very fast exterior wood decay in tropical landfills
+tropical_developing,Landfill,hou_decay1,1.329,Landfill survival lognormal mu
+tropical_developing,Landfill,hou_decay2,6,Fast household wood decay
+tropical_developing,Landfill,pap_decay1,0.821,Landfill survival lognormal mu - paper
+tropical_developing,Landfill,pap_decay2,2,Very fast paper decay in tropical landfills
+all,Conversion,carbon_fraction_wood,0.5,Carbon fraction of oven-dry wood mass (IPCC 2006 default)
+all,Conversion,density_softwood_kg_m3,400,"Oven-dry density, coniferous (kg/m3)"
+all,Conversion,density_hardwood_kg_m3,550,"Oven-dry density, non-coniferous broadleaf (kg/m3)"
+all,Conversion,density_mixed_kg_m3,475,"Oven-dry density, unknown species (kg/m3)"
+all,Conversion,retention_plywood,0.88,"Fibre retention, plywood/veneer"
+all,Conversion,density_particleboard_kg_m3,650,"Density, particle board (kg/m3)"
+all,Conversion,retention_particleboard,0.65,"Fibre retention, particle board"
+all,Conversion,density_fibreboard_kg_m3,800,"Density, fibreboard (kg/m3)"
+all,Conversion,retention_fibreboard,0.7,"Fibre retention, fibreboard"
+all,Conversion,density_engineered_kg_m3,450,"Density, engineered wood (kg/m3)"
+all,Conversion,retention_engineered,0.8,"Fibre retention, engineered wood"
+all,Conversion,density_panels_aggregate_kg_m3,680,"Density, wood-based panels aggregate (kg/m3)"
+all,Conversion,retention_panels_aggregate,0.85,"Fibre retention, panels aggregate"
+all,Conversion,carbon_fraction_charcoal,0.75,Carbon fraction of wood charcoal
+all,Conversion,biochar_stable_fraction,0.4,Stable (biochar) fraction of charcoal carbon
+developed,Allocation,sawnwood_construction_frac,0.705,End-use allocation fraction (developed)
+developed,Allocation,sawnwood_household_frac,0.13,End-use allocation fraction (developed)
+developed,Allocation,panels_construction_frac,1.0,End-use allocation fraction (developed)
+developed,Allocation,panels_household_frac,0.0,End-use allocation fraction (developed)
+developed,Allocation,other_indround_exterior_frac,0.882,End-use allocation fraction (developed)
+developed,Allocation,other_indround_household_frac,0.013,End-use allocation fraction (developed)
+emerging,Allocation,sawnwood_construction_frac,0.4875,End-use allocation fraction (emerging)
+emerging,Allocation,sawnwood_household_frac,0.2275,End-use allocation fraction (emerging)
+emerging,Allocation,panels_construction_frac,0.4,End-use allocation fraction (emerging)
+emerging,Allocation,panels_household_frac,0.6,End-use allocation fraction (emerging)
+emerging,Allocation,other_indround_exterior_frac,0.585,End-use allocation fraction (emerging)
+emerging,Allocation,other_indround_household_frac,0.2275,End-use allocation fraction (emerging)
+tropical_developing,Allocation,sawnwood_construction_frac,0.4125,End-use allocation fraction (tropical_developing)
+tropical_developing,Allocation,sawnwood_household_frac,0.2925,End-use allocation fraction (tropical_developing)
+tropical_developing,Allocation,panels_construction_frac,0.3,End-use allocation fraction (tropical_developing)
+tropical_developing,Allocation,panels_household_frac,0.7,End-use allocation fraction (tropical_developing)
+tropical_developing,Allocation,other_indround_exterior_frac,0.495,End-use allocation fraction (tropical_developing)
+tropical_developing,Allocation,other_indround_household_frac,0.2925,End-use allocation fraction (tropical_developing)
