@@ -113,13 +113,13 @@
                 <input id="sp-efficiency" type="number" min="0.01" max="1.0" step="0.01" value="0.90" class="il-input-field" oninput="onSpChange()">
                 <button onclick="resetSpEfficiency()" class="text-xs text-indigo-600 hover:underline mt-1">↺ Reset to category default</button>
               </div>
+              <div id="sp-param-box" class="mt-3 pt-3 border-t border-gray-100"></div>
             </div>
 
             <div class="p-4 bg-white rounded-2xl shadow">
               <h2 class="text-base font-bold text-teal-800 mb-3 flex items-center gap-2">
                 Run Product Carbon Tracker
               </h2>
-              <div id="sp-param-box" class="mb-3"></div>
               <div class="flex flex-wrap gap-2">
                 <button id="btn-sp-run" class="btn px-4 py-2 rounded-xl bg-teal-700 text-white hover:bg-teal-800" onclick="runSpTracker()">▶ Run Tracker</button>
                 <button id="btn-sp-clear" class="btn px-4 py-2 rounded-xl bg-gray-200 hover:bg-gray-300" onclick="clearSpTracker()">Clear</button>
