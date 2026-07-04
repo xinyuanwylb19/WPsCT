@@ -827,7 +827,7 @@ function statTile(label, value){
             refYears.forEach(y=>{ const mo=modByYear[y];
               if (mo!=null && mo!==0){ const rf=glValRef.byYear[y]; sumPct += (rf-mo)/mo*100; sumSq += (rf-mo)*(rf-mo); n++; } });
             if (n){ const meanPct=sumPct/n, rmse=fromKg(Math.sqrt(sumSq/n));
-              statsTxt = (glValRef.synthetic ? '⚠ Synthetic example - illustrative only, not real reference data. ' : '') +
+              statsTxt = (glValRef.note ? glValRef.note + '  ·  ' : '') +
                 'Matched years: '+n+'  ·  Mean difference: '+(meanPct>=0?'+':'')+meanPct.toFixed(1)+'% (reference vs model)  ·  RMSE: '+
                 (rmse>=10?rmse.toFixed(1):rmse.toFixed(3))+' '+unitLbl();
             } else { statsTxt = 'No overlapping years between the reference series and the model.'; }
@@ -856,6 +856,26 @@ function statTile(label, value){
           };
           reader.readAsText(f);
           ev.target.value = '';
+        };
+        // Published literature anchor points for cross-comparison (values in kg C; boundaries differ from this model).
+        const GL_LIT_REFS = {
+          world: { location:'World', metric:'inuse', label:'Published: Zhang et al. (2020)',
+                   note:'Global in-use HWP, cumulative since 1992 (narrower baseline than this model)',
+                   byYear:{ 2015: 2938e9 } },
+          usa:   { location:'United States of America', metric:'inuse', label:'Published: USDA / EPA inventory',
+                   note:'US in-use HWP stock, 1990 and 2019 (different baseline and boundary)',
+                   byYear:{ 1990: 1246e9, 2019: 1532e9 } },
+          china: { location:'China, mainland', metric:'inuse', label:'Published: Zhao et al. (2023)',
+                   note:'China end-use HWP, accumulated 1961-2020',
+                   byYear:{ 2020: 893e9 } }
+        };
+        window.glValLoadLit = async function(key){
+          if(!key) return;
+          const ref = GL_LIT_REFS[key]; if(!ref) return;
+          const mSel = document.getElementById('gl-val-metric'); if(mSel) mSel.value = ref.metric;
+          await glSelectLocation(ref.location);
+          glValRef = { label: ref.label, byYear: ref.byYear, synthetic:false, note: ref.note };
+          glValRefresh();
         };
         window.glValExample = function(){
           if (!globalSelectedData){ alert('Select a country or region first.'); return; }
