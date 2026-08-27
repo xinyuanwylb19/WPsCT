@@ -1534,14 +1534,14 @@ json.dumps(out, allow_nan=False)
          parameter CSV is regenerated with any Section-4 edits applied, so the
          user can override defaults without leaving the tab. */
       const WP_PARAM_DEFAULTS = {
-        'Biofuel': {efficiency:1},
+        'Biofuel': {efficiency:0.96},
         'Biochar': {decay_1:0.007, decay_2:0.0003},
         'Construction':   {disposal_1:0.133, disposal_2:0.028, disposal_3:80, recycle_1:0.085, recycle_2:0.015},
         'Exterior':       {disposal_1:0.326, disposal_2:0.041, disposal_3:25},
         'Household':      {disposal_1:0.265, disposal_2:0.031, disposal_3:30, recycle_1:0.085, recycle_2:0.015},
-        'Graphic Paper':  {disposal_1:1.006, disposal_2:0, disposal_3:6, recycle_1:0.225, recycle_2:0.027},
-        'Other Paper':    {disposal_1:6.036, disposal_2:0, disposal_3:1, recycle_1:0.225, recycle_2:0.027},
-        'Household Paper':{disposal_1:12.036, disposal_2:0, disposal_3:0.5},
+        'Graphic Paper':  {disposal_1:1.006, disposal_2:0.0925, disposal_3:6, recycle_1:0.225, recycle_2:0.027},
+        'Other Paper':    {disposal_1:6.036, disposal_2:0.555, disposal_3:1, recycle_1:0.225, recycle_2:0.027},
+        'Household Paper':{disposal_1:12.036, disposal_2:1.1008, disposal_3:0.5},
         'Landfill': {con_decay1:0.997, con_decay2:30, ext_decay1:1.178, ext_decay2:20,
                      hou_decay1:1.329, hou_decay2:15, pap_decay1:0.821, pap_decay2:5}
       };

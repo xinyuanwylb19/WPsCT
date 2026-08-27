@@ -118,21 +118,23 @@ def recycle_CF(years, disposals, rp1, rp2):
     return recycled, landfill
 
 #------------------------------------------------------------------------------
-# Landfill carbon flux (Decay rate: l(t) = log(t) * k1 / (k2 * sqrt(2*pi)))
+# Landfill carbon flux. Equation 4.
 
 def survive(t, k1, k2):
+    """Share of a landfilled cohort still present at age t (Equation 4).
+
+    Annual decay rate: rho(s) = k1 * ln(s) / (k2 * sqrt(2*pi)).
+    k1 is the basic decay rate, k2 is the turnover time in years.
+    Survival is 1 minus the accumulated decay, so a cohort is gone at t = k2.
+    """
     if k2 <= 0:
         raise ValueError("k2 must be > 0")
     if t <= 0:
         return 1.0
-    z = (math.log(t) - k1) / k2
-    Phi = 0.5 * (1.0 + math.erf(z / math.sqrt(2.0)))
-    S = 1.0 - Phi
-    if S < 0.0: 
-        return 0.0
-    if S > 1.0: 
-        return 1.0
-    return S
+    c = 0.0
+    for s in range(1, int(t) + 1):
+        c += k1 * math.log(s) / (k2 * math.sqrt(2.0 * math.pi))
+    return 0.0 if c >= 1.0 else min(1.0, max(0.0, 1.0 - c))
 
 def landfill_CF(years, landfill_input, k1, k2):
     

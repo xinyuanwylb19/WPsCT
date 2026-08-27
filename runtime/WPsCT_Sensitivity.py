@@ -12,6 +12,7 @@ import WPsCT_Main as wm
 
 SQRT2PI  = math.exp(math.sqrt(2 * math.pi))
 PRODUCTS = ['Construction', 'Exterior', 'Household', 'Graphic Paper', 'Other Paper', 'Household Paper']
+PAPER_PRODUCTS = {'Graphic Paper', 'Other Paper', 'Household Paper'}
 LF_TURN  = ['con_decay2', 'ext_decay2', 'hou_decay2', 'pap_decay2']
 _WORK = '/tmp'
 
@@ -27,6 +28,10 @@ def couple_service_life(para, prod, L):
     d2 = _gp(para, prod, 'disposal_2', 0.0)
     d3 = _gp(para, prod, 'disposal_3', L)
     L = max(float(L), 1e-6)
+    # Paper always uses the constant-rate form; solid wood uses the bell curve.
+    # Decide by product, not by whether disposal_2 is zero.
+    if prod in PAPER_PRODUCTS:
+        return SQRT2PI * 0.5 / L, 0.0, L
     if d2 and d2 > 0:
         cv2 = 1.0 / (2.0 * d2 * d3)
         dp2 = 1.0 / (2.0 * cv2 * L)
