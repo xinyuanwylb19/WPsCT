@@ -95,8 +95,14 @@ function statTile(label, value){
           BCDecay:'Biochar Decay'
         };
 
-        const GL_COUNTRIES = ["Afghanistan","Albania","Algeria","American Samoa","Andorra","Angola","Anguilla","Antigua and Barbuda","Argentina","Armenia","Aruba","Ascension, Saint Helena and Tristan da Cunha","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belgium-Luxembourg","Belize","Benin","Bermuda","Bhutan","Bolivia (Plurinational State of)","Bosnia and Herzegovina","Botswana","Brazil","British Virgin Islands","Brunei Darussalam","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon","Canada","Cayman Islands","Central African Republic","Chad","Chile","China","China, Hong Kong SAR","China, Macao SAR","China, Taiwan Province of","China, mainland","Christmas Island","Cocos (Keeling) Islands","Colombia","Comoros","Congo","Cook Islands","Costa Rica","Croatia","Cuba","Curaçao","Cyprus","Czechia","Czechoslovakia","Côte d'Ivoire","Democratic People's Republic of Korea","Democratic Republic of the Congo","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Ethiopia PDR","Falkland Islands (Malvinas)","Faroe Islands","Fiji","Finland","France","French Guiana","French Polynesia","French Southern Territories","Gabon","Gambia","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guadeloupe","Guam","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland","India","Indonesia","Iran (Islamic Republic of)","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Kuwait","Kyrgyzstan","Lao People's Democratic Republic","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Martinique","Mauritania","Mauritius","Mayotte","Melanesia","Mexico","Micronesia","Micronesia (Federated States of)","Mongolia","Montenegro","Montserrat","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands (Kingdom of the)","Netherlands Antilles (former)","New Caledonia","New Zealand","Nicaragua","Niger","Nigeria","Niue","Norfolk Island","North Macedonia","Northern Mariana Islands","Norway","Oman","Pacific Islands Trust Territory","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Pitcairn","Poland","Polynesia","Portugal","Qatar","Republic of Korea","Republic of Moldova","Romania","Russian Federation","Rwanda","Réunion","Saint Kitts and Nevis","Saint Lucia","Saint Martin (French part)","Saint Pierre and Miquelon","Saint Vincent and the Grenadines","Samoa","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Serbia and Montenegro","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South America","South Sudan","Spain","Sri Lanka","Sudan","Sudan (former)","Suriname","Sweden","Switzerland","Syrian Arab Republic","Tajikistan","Thailand","Timor-Leste","Togo","Tokelau","Tonga","Trinidad and Tobago","Tunisia","Turkmenistan","Turks and Caicos Islands","Tuvalu","Türkiye","USSR","Uganda","Ukraine","United Arab Emirates","United Kingdom of Great Britain and Northern Ireland","United Republic of Tanzania","United States of America","Uruguay","Uzbekistan","Vanuatu","Venezuela (Bolivarian Republic of)","Viet Nam","Wallis and Futuna Islands","Western Sahara","Yemen","Yugoslav SFR","Zambia","Zimbabwe"];
-        const GL_REGIONS = ["Africa","Americas","Asia","Australia and New Zealand","Caribbean","Central America","Central Asia","Eastern Africa","Eastern Asia","Eastern Europe","Europe","European Union (27)","Land Locked Developing Countries (LLDCs)","Least Developed Countries (LDCs)","Low Income Food Deficit Countries (LIFDCs)","Middle Africa","Net Food Importing Developing Countries (NFIDCs)","Northern Africa","Northern America","Northern Europe","Oceania","Small Island Developing States (SIDS)","South-eastern Asia","Southern Africa","Southern Asia","Southern Europe","Western Africa","Western Asia","Western Europe","World"];
+        const GL_COUNTRIES = ["Afghanistan", "Albania", "Algeria", "American Samoa", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Ascension, Saint Helena and Tristan da Cunha", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belgium-Luxembourg", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia (Plurinational State of)", "Bosnia and Herzegovina", "Botswana", "Brazil", "British Virgin Islands", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Cayman Islands", "Central African Republic", "Chad", "Chile", "China", "China, Hong Kong SAR", "China, Macao SAR", "China, Taiwan Province of", "China, mainland", "Christmas Island", "Cocos (Keeling) Islands", "Colombia", "Comoros", "Congo", "Cook Islands", "Costa Rica", "Croatia", "Cuba", "Curaçao", "Cyprus", "Czechia", "Czechoslovakia", "Côte d'Ivoire", "Democratic People's Republic of Korea", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Ethiopia PDR", "Falkland Islands (Malvinas)", "Faroe Islands", "Fiji", "Finland", "France", "French Guiana", "French Polynesia", "French Southern Territories", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada", "Guadeloupe", "Guam", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran (Islamic Republic of)", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan", "Lao People's Democratic Republic", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Martinique", "Mauritania", "Mauritius", "Mayotte", "Mexico", "Micronesia (Federated States of)", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands (Kingdom of the)", "Netherlands Antilles (former)", "New Caledonia", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Niue", "Norfolk Island", "North Macedonia", "Northern Mariana Islands", "Norway", "Oman", "Pacific Islands Trust Territory", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Pitcairn", "Poland", "Portugal", "Qatar", "Republic of Korea", "Republic of Moldova", "Romania", "Russian Federation", "Rwanda", "Réunion", "Saint Kitts and Nevis", "Saint Lucia", "Saint Martin (French part)", "Saint Pierre and Miquelon", "Saint Vincent and the Grenadines", "Samoa", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Serbia and Montenegro", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Sudan (former)", "Suriname", "Sweden", "Switzerland", "Syrian Arab Republic", "Tajikistan", "Thailand", "Timor-Leste", "Togo", "Tokelau", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Turks and Caicos Islands", "Tuvalu", "Türkiye", "USSR", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom of Great Britain and Northern Ireland", "United Republic of Tanzania", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela (Bolivarian Republic of)", "Viet Nam", "Wallis and Futuna Islands", "Western Sahara", "Yemen", "Yugoslav SFR", "Zambia", "Zimbabwe"];
+        // FAO areas that are not present-day countries: dissolved states, and
+        // aggregates that overlap their own members (China = mainland + HK + Macao +
+        // Taiwan). They stay selectable because their legacy pools are real, but they
+        // are excluded from the map, the ranking and the custom group.
+        const GL_FORMER = ["Belgium-Luxembourg", "China", "Czechoslovakia", "Ethiopia PDR", "Netherlands Antilles (former)", "Pacific Islands Trust Territory", "Serbia and Montenegro", "Sudan (former)", "USSR", "Yugoslav SFR"];
+        const GL_FORMER_SET = new Set(GL_FORMER);
+        const GL_REGIONS = ["Africa", "Americas", "Asia", "Australia and New Zealand", "Caribbean", "Central America", "Central Asia", "Eastern Africa", "Eastern Asia", "Eastern Europe", "Europe", "European Union (27)", "Land Locked Developing Countries (LLDCs)", "Least Developed Countries (LDCs)", "Low Income Food Deficit Countries (LIFDCs)", "Melanesia", "Micronesia", "Middle Africa", "Net Food Importing Developing Countries (NFIDCs)", "Northern Africa", "Northern America", "Northern Europe", "Oceania", "Polynesia", "Small Island Developing States (SIDS)", "South America", "South-eastern Asia", "Southern Africa", "Southern Asia", "Southern Europe", "Western Africa", "Western Asia", "Western Europe", "World"];
 
         const NAME_TO_ISO3 = {
           'Türkiye':'TUR',
@@ -123,7 +129,6 @@ function statTile(label, value){
           'Barbados':'BRB',
           'Belarus':'BLR',
           'Belgium':'BEL',
-          'Belgium-Luxembourg':'BEL',
           'Belize':'BLZ',
           'Benin':'BEN',
           'Bermuda':'BMU',
@@ -145,7 +150,6 @@ function statTile(label, value){
           'Central African Republic':'CAF',
           'Chad':'TCD',
           'Chile':'CHL',
-          'China':'CHN',
           'China, Hong Kong SAR':'HKG',
           'China, Macao SAR':'MAC',
           'China, Taiwan Province of':'TWN',
@@ -162,7 +166,6 @@ function statTile(label, value){
           'Curaçao':'CUW',
           'Cyprus':'CYP',
           'Czechia':'CZE',
-          'Czechoslovakia':'CZE',
           'Côte d\'Ivoire':'CIV',
           'Democratic People\'s Republic of Korea':'PRK',
           'Democratic Republic of the Congo':'COD',
@@ -178,7 +181,6 @@ function statTile(label, value){
           'Estonia':'EST',
           'Eswatini':'SWZ',
           'Ethiopia':'ETH',
-          'Ethiopia PDR':'ETH',
           'Falkland Islands (Malvinas)':'FLK',
           'Faroe Islands':'FRO',
           'Fiji':'FJI',
@@ -300,7 +302,6 @@ function statTile(label, value){
           'Spain':'ESP',
           'Sri Lanka':'LKA',
           'Sudan':'SDN',
-          'Sudan (former)':'SDN',
           'Suriname':'SUR',
           'Sweden':'SWE',
           'Switzerland':'CHE',
@@ -359,15 +360,19 @@ function statTile(label, value){
           const cSel = document.getElementById('gl-country-select');
           const rSel = document.getElementById('gl-region-select');
           if (cSel) {
-            cSel.innerHTML = GL_COUNTRIES.map(n =>
-              `<option value="${n}">${n}</option>`).join('');
+            const opt = n => `<option value="${n}">${n}</option>`;
+            cSel.innerHTML = GL_COUNTRIES.filter(n => !GL_FORMER_SET.has(n)).map(opt).join('')
+              + '<optgroup label="Former and aggregate areas">'
+              + GL_COUNTRIES.filter(n => GL_FORMER_SET.has(n)).map(opt).join('')
+              + '</optgroup>';
           }
           if (rSel) {
             rSel.innerHTML = GL_REGIONS.map(n =>
               `<option value="${n}">${n}</option>`).join('');
           }
           const xSel = document.getElementById('gl-custom-select');
-          if (xSel) xSel.innerHTML = GL_COUNTRIES.map(n => `<option value="${n}">${n}</option>`).join('');
+          if (xSel) xSel.innerHTML = GL_COUNTRIES.filter(n => !GL_FORMER_SET.has(n))
+            .map(n => `<option value="${n}">${n}</option>`).join('');
         }
 
         window.glSwitchListTab = function(tab) {
@@ -625,6 +630,7 @@ function statTile(label, value){
           const yearB  = glMapYear;
           const isos=[], z=[], hov=[], names=[];
           for (const [name, iso] of Object.entries(NAME_TO_ISO3)) {
+            if (GL_FORMER_SET.has(name)) continue;
             const rows = globalCountryCache[name];
             if (!rows) continue;
             let val;
@@ -974,6 +980,7 @@ function statTile(label, value){
         const N = parseInt((document.getElementById('gl-rank-n')||{}).value) || 15;
         const out = [];
         for (const name of GL_COUNTRIES){
+          if (GL_FORMER_SET.has(name)) continue;
           const data = globalCountryCache[name]; if (!data || !data.length) continue;
           const row = (glMapYear ? (data.find(r=>r.Year===glMapYear) || data[data.length-1]) : data[data.length-1]);
           let v = 0;
@@ -1246,9 +1253,9 @@ json.dumps(out, allow_nan=False)
         if(!pyReady){ await initPy(); if(!pyReady) return; }
         try{
           setStatus('Running model and preparing storage plot…');
-          const pUnit=getPlotUnit();
+          const inUnit=getInputUnit(); const pUnit=getPlotUnit();
           const outCsv='/tmp/WPsCT_Results.csv';
-          try{ pyodide.FS.stat(outCsv); }catch(e){ await runTracker(); }
+          await runTracker();   // always re-run, so the plot matches the current selection
           pyodide.globals.set('out_csv',outCsv);
           const jsonStr=await pyodide.runPythonAsync(`
 import pandas as pd, json, numpy as np
@@ -1278,7 +1285,7 @@ json.dumps(out, allow_nan=False)
           const traces=[];
           for(const name of order){
             if(s[name]){
-              const y=fromKg(s[name],pUnit);
+              const y=fromKg(toKg(s[name],inUnit),pUnit);
               const label=displayNames[name]||name;
               traces.push({
                 x:years, y,
@@ -1299,10 +1306,11 @@ json.dumps(out, allow_nan=False)
           const badges=document.getElementById('eup-summary-badges');
           if(panel && badges){
             const inUsePools=['Construction','Exterior','Household','GraphicPaper','HouseholdPaper','OtherPaper'];
-            const totalInUse=fromKg([inUsePools.reduce((a,k)=>a+(last[k]||0),0)],pUnit)[0];
-            const lf=fromKg([last['Landfill']||0],pUnit)[0];
-            const bc=fromKg([last['Biochar']||0],pUnit)[0];
-            const total=fromKg([Object.values(last).reduce((a,v)=>a+v,0)],pUnit)[0];
+            const conv=v=>fromKg(toKg([v],inUnit),pUnit)[0];
+            const totalInUse=conv(inUsePools.reduce((a,k)=>a+(last[k]||0),0));
+            const lf=conv(last['Landfill']||0);
+            const bc=conv(last['Biochar']||0);
+            const total=conv(Object.values(last).reduce((a,v)=>a+v,0));
             const ul=unitLabel(pUnit,true);
             const yr=years[years.length-1]||'';
             badges.innerHTML=[
@@ -1536,14 +1544,14 @@ json.dumps(out, allow_nan=False)
       const WP_PARAM_DEFAULTS = {
         'Biofuel': {efficiency:0.96},
         'Biochar': {decay_1:0.007, decay_2:0.0003},
-        'Construction':   {disposal_1:0.133, disposal_2:0.028, disposal_3:80, recycle_1:0.085, recycle_2:0.015},
-        'Exterior':       {disposal_1:0.326, disposal_2:0.041, disposal_3:25},
-        'Household':      {disposal_1:0.265, disposal_2:0.031, disposal_3:30, recycle_1:0.085, recycle_2:0.015},
-        'Graphic Paper':  {disposal_1:1.006, disposal_2:0.0925, disposal_3:6, recycle_1:0.225, recycle_2:0.027},
-        'Other Paper':    {disposal_1:6.036, disposal_2:0.555, disposal_3:1, recycle_1:0.225, recycle_2:0.027},
-        'Household Paper':{disposal_1:12.036, disposal_2:1.1008, disposal_3:0.5},
-        'Landfill': {con_decay1:0.997, con_decay2:30, ext_decay1:1.178, ext_decay2:20,
-                     hou_decay1:1.329, hou_decay2:15, pap_decay1:0.821, pap_decay2:5}
+        'Construction': {disposal_1:0.133, disposal_2:0.02861, disposal_3:80.0, recycle_1:0.085, recycle_2:0.015},
+        'Exterior': {disposal_1:0.326, disposal_2:0.04921, disposal_3:25.0},
+        'Household': {disposal_1:0.265, disposal_2:0.03854, disposal_3:30.0, recycle_1:0.085, recycle_2:0.015},
+        'Graphic Paper': {disposal_1:1.006, disposal_2:0.0925, disposal_3:6.0, recycle_1:0.225, recycle_2:0.027},
+        'Other Paper': {disposal_1:6.036, disposal_2:0.555, disposal_3:1.0, recycle_1:0.225, recycle_2:0.027},
+        'Household Paper': {disposal_1:12.036, disposal_2:1.10079, disposal_3:0.5},
+        'Landfill': {con_decay1:1.007, con_decay2:30.0, ext_decay1:1.184, ext_decay2:20.0,
+                     hou_decay1:1.348, hou_decay2:15.0, pap_decay1:2.618, pap_decay2:5.0}
       };
       const WP_PARAM_LABELS = {
         disposal_1:'Disposal rate - peak height',
@@ -1646,16 +1654,11 @@ dp1 = get_para(prod, 'disposal_1')
 dp2 = get_para(prod, 'disposal_2')
 dp3 = get_para(prod, 'disposal_3')
 
-inuse_raw, _ = wf.disposal_CF(n, production, dp1, dp2, dp3)
+inuse_raw, dispos_raw = wf.disposal_CF(n, production, dp1, dp2, dp3)
 inuse_arr = [max(0.0, float(v)) for v in inuse_raw]
 
-# ── Step 2: Landfill inflow = actual decrease in in-use each year ─────────────
-# This correctly captures only what truly leaves in-use; once in-use=0, inflow=0
-landfill_in_raw = []
-for i in range(n):
-    prev_inuse = inuse_arr[i-1] if i > 0 else C0
-    flow = max(0.0, prev_inuse - inuse_arr[i])
-    landfill_in_raw.append(flow)
+# ── Step 2: Landfill inflow = what the tracker reports as disposed ────────────────
+landfill_in_raw = [max(0.0, float(v)) for v in dispos_raw]
 
 # ── Step 3: Recycling reduces landfill input ──────────────────────────────────
 rp1_rows = para.loc[(para['Product'] == prod) & (para['Variable'] == 'recycle_1'), 'Parameter']
@@ -1667,10 +1670,7 @@ if len(rp1_rows) > 0:
 else:
     landfill_in = landfill_in_raw[:]
 
-# ── Step 4: Landfill pool - cohort survival with exponential decay ────────────
-# Each cohort entering landfill at year j decays with half-life k2.
-# At year i, cohort j has survived for (i-j) years: amount = inflow[j] * exp(-ln2/k2*(i-j))
-# This guarantees: when inflow stops, pool decays cleanly to zero.
+# ── Step 4: Landfill pool - same survival model the full tracker uses ──────────
 lf_map = {
     'Construction':    ('con_decay1','con_decay2'),
     'Exterior':        ('ext_decay1','ext_decay2'),
@@ -1680,13 +1680,10 @@ lf_map = {
     'Household Paper': ('pap_decay1','pap_decay2'),
 }
 lf_keys = lf_map.get(prod, ('con_decay1','con_decay2'))
+k1 = get_para('Landfill', lf_keys[0])
 k2 = get_para('Landfill', lf_keys[1])
-decay_rate = math.log(2.0) / max(k2, 0.01)
-
-lf_pool_arr = []
-for i in range(n):
-    pool = sum(landfill_in[j] * math.exp(-decay_rate * (i - j)) for j in range(i + 1))
-    lf_pool_arr.append(max(0.0, pool))
+lf_pool_raw, _ = wf.landfill_CF(n, landfill_in, k1, k2)
+lf_pool_arr = [max(0.0, float(v)) for v in lf_pool_raw]
 
 # ── Step 5: Derived series ────────────────────────────────────────────────────
 years_arr      = list(range(1, n + 1))
@@ -1702,7 +1699,7 @@ out = {
     'C0':             C0,
     'product':        prod,
     'n_years':        n,
-    'lf_halflife':    k2,
+    'lf_turnover':    k2,
 }
 json.dumps(out, allow_nan=False)
           `);
@@ -2018,13 +2015,10 @@ production = [C0] + [0.0] * (n - 1)
 dp1 = get_para(prod, 'disposal_1')
 dp2 = get_para(prod, 'disposal_2')
 dp3 = get_para(prod, 'disposal_3')
-inuse_raw, _ = wf.disposal_CF(n, production, dp1, dp2, dp3)
+inuse_raw, dispos_raw = wf.disposal_CF(n, production, dp1, dp2, dp3)
 inuse_arr = [max(0.0, float(v)) for v in inuse_raw]
 
-landfill_in_raw = []
-for i in range(n):
-    prev = inuse_arr[i-1] if i > 0 else C0
-    landfill_in_raw.append(max(0.0, prev - inuse_arr[i]))
+landfill_in_raw = [max(0.0, float(v)) for v in dispos_raw]
 
 rp1_rows = para.loc[(para['Product'] == prod) & (para['Variable'] == 'recycle_1'), 'Parameter']
 if len(rp1_rows) > 0:
@@ -2039,9 +2033,11 @@ lf_map = {
     'Household':('hou_decay1','hou_decay2'),'Graphic Paper':('pap_decay1','pap_decay2'),
     'Other Paper':('pap_decay1','pap_decay2'),'Household Paper':('pap_decay1','pap_decay2'),
 }
-k2 = get_para('Landfill', lf_map.get(prod, ('con_decay1','con_decay2'))[1])
-decay_rate = math.log(2.0) / max(k2, 0.01)
-lf_pool_arr = [max(0.0, sum(landfill_in[j]*math.exp(-decay_rate*(i-j)) for j in range(i+1))) for i in range(n)]
+lf_keys = lf_map.get(prod, ('con_decay1','con_decay2'))
+k1 = get_para('Landfill', lf_keys[0])
+k2 = get_para('Landfill', lf_keys[1])
+lf_pool_raw, _ = wf.landfill_CF(n, landfill_in, k1, k2)
+lf_pool_arr = [max(0.0, float(v)) for v in lf_pool_raw]
 
 years_arr      = list(range(1, n+1))
 total_retained = [max(0.0, inuse_arr[i]+lf_pool_arr[i]) for i in range(n)]
@@ -2202,6 +2198,9 @@ json.dumps(out, allow_nan=False)
       const SQRT2PI_E = Math.exp(Math.sqrt(2 * Math.PI));   // e^sqrt(2*pi): links dp1 and the peak rate
       const SG_SOLID = ['Construction','Exterior','Household'];
       const SG_PAPER = [['Graphic Paper','GraphicPaper'],['Other Paper','OtherPaper'],['Household Paper','HouseholdPaper']];
+      // Default width and service life per paper grade, from runtime/WPs_Tracker_paras.csv.
+      // Paper has no peak-height input, so its width keeps the default spread-to-life ratio.
+      const SG_PAPER_REF = {GraphicPaper:[0.0925,6], OtherPaper:[0.555,1], HouseholdPaper:[1.10079,0.5]};
       const SG_RECYC = [['Construction','Construction'],['Household','Household'],['Graphic Paper','GraphicPaper'],['Other Paper','OtherPaper']];
       const SG_LF    = ['con','ext','hou','pap'];
       function sgNum(id){ const e=document.getElementById(id); return e?parseFloat(e.value):NaN; }
@@ -2210,21 +2209,42 @@ json.dumps(out, allow_nan=False)
         const y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x);
         return s*y; }
       function _normCdf(z){ return 0.5*(1+_erf(z/Math.SQRT2)); }
+      // Area under exp(-dp2*(t-dp3)^2/dp3) for ages t >= 0.
+      function sgBellArea(dp2, dp3){
+        const sd = Math.sqrt(dp3/(2*dp2));
+        return sd*Math.sqrt(2*Math.PI)*_normCdf(dp3/sd);
+      }
+      // Width that makes a bell curve of peak height `a` enclose an area of exactly 1,
+      // so every unit produced is disposed of exactly once.
+      function sgWidthForPeak(a, L){
+        let lo=1e-8, hi=1e4;
+        for(let i=0;i<200;i++){ const m=Math.sqrt(lo*hi);
+          if(a*sgBellArea(m,L) > 1) lo=m; else hi=m; }
+        return Math.sqrt(lo*hi);
+      }
+      // Disposal parameters for one product, given the inputs the page offers.
+      function sgDisposalParams(key, paper){
+        const L = sgNum('sg-hl-'+key);
+        if(paper){ const ref=SG_PAPER_REF[key]; const dp2=ref[0]*ref[1]/L;
+                   return {L:L, dp2:dp2, a:1/sgBellArea(dp2,L)}; }
+        const a = sgNum('sg-pk-'+key);
+        return {L:L, dp2:sgWidthForPeak(a,L), a:a};
+      }
 
       // Build the full tracker parameter set (Product, Variable, Parameter) from the generator inputs.
       function sgBuildRecords(){
         const recs=[];
         SG_SOLID.forEach(function(name){
-          const L=sgNum('sg-hl-'+name), a=sgNum('sg-pk-'+name);
-          recs.push({Product:name,Variable:'disposal_1',Parameter:sgRound(a*SQRT2PI_E)});
-          recs.push({Product:name,Variable:'disposal_2',Parameter:sgRound(Math.PI*L*a*a)});
-          recs.push({Product:name,Variable:'disposal_3',Parameter:L});
+          const d = sgDisposalParams(name, false);
+          recs.push({Product:name,Variable:'disposal_1',Parameter:sgRound(d.a*SQRT2PI_E)});
+          recs.push({Product:name,Variable:'disposal_2',Parameter:sgRound(d.dp2)});
+          recs.push({Product:name,Variable:'disposal_3',Parameter:d.L});
         });
         SG_PAPER.forEach(function(p){
-          const L=sgNum('sg-hl-'+p[1]), a=0.5/L;
-          recs.push({Product:p[0],Variable:'disposal_1',Parameter:sgRound(a*SQRT2PI_E)});
-          recs.push({Product:p[0],Variable:'disposal_2',Parameter:0});
-          recs.push({Product:p[0],Variable:'disposal_3',Parameter:L});
+          const d = sgDisposalParams(p[1], true);
+          recs.push({Product:p[0],Variable:'disposal_1',Parameter:sgRound(d.a*SQRT2PI_E)});
+          recs.push({Product:p[0],Variable:'disposal_2',Parameter:sgRound(d.dp2)});
+          recs.push({Product:p[0],Variable:'disposal_3',Parameter:d.L});
         });
         SG_RECYC.forEach(function(p){
           recs.push({Product:p[0],Variable:'recycle_1',Parameter:sgNum('sg-r1-'+p[1])});
@@ -2243,7 +2263,7 @@ json.dumps(out, allow_nan=False)
       window.sensGenerate = function(){
         try{
           sensParaRecords = sgBuildRecords();
-          const w = SG_SOLID.map(function(n){ const L=sgNum('sg-hl-'+n),a=sgNum('sg-pk-'+n); return n.slice(0,4)+' '+sgRound(Math.PI*L*a*a); });
+          const w = SG_SOLID.map(function(n){ return n.slice(0,4)+' '+sgRound(sgDisposalParams(n,false).dp2); });
           document.getElementById('sg-note').textContent =
             'Generated '+sensParaRecords.length+' parameters (now used by the analyses below). Derived widths: '+w.join(', ')+'.';
           setSensStatus('Parameters generated and active. Use Download to save the file.');
@@ -2276,9 +2296,9 @@ json.dumps(out, allow_nan=False)
         const x=[], y=[]; let ylab='', xlab='';
         if(type==='disposal'){
           const paper=['GraphicPaper','OtherPaper','HouseholdPaper'].indexOf(key)>=0;
-          const L=sgNum('sg-hl-'+key), a=paper?(0.5/L):sgNum('sg-pk-'+key), dp2=paper?0:(Math.PI*L*a*a);
-          const tmax=Math.max(60, Math.ceil(paper?6*L:2.4*L));
-          for(let t=0;t<=tmax;t++){ x.push(t); y.push(a*Math.exp(-dp2*(t-L)*(t-L)/Math.max(L,1e-9))); }
+          const d=sgDisposalParams(key, paper), L=d.L;
+          const tmax=Math.max(20, Math.ceil(2.4*L));
+          for(let t=0;t<=tmax;t++){ x.push(t); y.push(d.a*Math.exp(-d.dp2*(t-L)*(t-L)/Math.max(L,1e-9))); }
           ylab='Annual disposal rate'; xlab='Product age (years)';
         } else if(type==='recycling'){
           const r1=sgNum('sg-r1-'+key), r2=sgNum('sg-r2-'+key);
@@ -2286,7 +2306,14 @@ json.dumps(out, allow_nan=False)
           ylab='Recycling rate'; xlab='Years since production';
         } else {
           const k1=sgNum('sg-lf1-'+key), k2=sgNum('sg-lf2-'+key);
-          for(let t=0;t<=200;t++){ x.push(t); y.push(t===0?1:Math.max(0,Math.min(1,1-_normCdf((Math.log(t)-k1)/k2)))); }
+          // Same survival curve the tracker uses: 1 minus the accumulated decay,
+          // decay(s) = k1*ln(s)/(k2*sqrt(2*pi)), so the pool empties at t = k2.
+          const tmax=Math.max(20, Math.ceil(1.4*k2));
+          let acc=0;
+          for(let t=0;t<=tmax;t++){
+            if(t>0) acc += k1*Math.log(t)/(k2*Math.sqrt(2*Math.PI));
+            x.push(t); y.push(Math.max(0,Math.min(1,1-acc)));
+          }
           ylab='Fraction remaining in landfill'; xlab='Years since disposal';
         }
         return {x:x,y:y,ylab:ylab,xlab:xlab};

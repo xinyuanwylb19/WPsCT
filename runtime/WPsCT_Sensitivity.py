@@ -5,14 +5,13 @@
 #                      parameter modifications. The front end loops this to build the
 #                      response curve, the tornado chart, and the uncertainty band.
 #------------------------------------------------------------------------------
-import math, random
+import math
 import pandas as pd
 import WPsCT_Functions as wf
 import WPsCT_Main as wm
 
-SQRT2PI  = math.exp(math.sqrt(2 * math.pi))
+EXP_SQRT2PI = math.exp(math.sqrt(2 * math.pi))   # links disposal_1 to the peak disposal rate
 PRODUCTS = ['Construction', 'Exterior', 'Household', 'Graphic Paper', 'Other Paper', 'Household Paper']
-PAPER_PRODUCTS = {'Graphic Paper', 'Other Paper', 'Household Paper'}
 LF_TURN  = ['con_decay2', 'ext_decay2', 'hou_decay2', 'pap_decay2']
 _WORK = '/tmp'
 
@@ -22,22 +21,28 @@ def _gp(para, prod, var, default=None):
     return float(r.values[0]) if len(r) else default
 
 
+def bell_area(dp2, dp3):
+    """Area under exp(-dp2 * (t - dp3)^2 / dp3) for ages t >= 0."""
+    sd = math.sqrt(dp3 / (2.0 * dp2))
+    return sd * math.sqrt(2.0 * math.pi) * 0.5 * (1.0 + math.erf((dp3 / sd) / math.sqrt(2.0)))
+
+
 def couple_service_life(para, prod, L):
-    """Service half-life L -> coupled (dp1, dp2, dp3), normalised so the disposal
-       distribution integrates to ~1 (solid wood = Gaussian; paper = constant rate)."""
+    """Service half-life L -> coupled (dp1, dp2, dp3) for the disposal bell curve.
+
+    The width keeps the product's default spread-to-life ratio. The height is then
+    set so the curve integrates to exactly 1 over ages 0..infinity, which is what
+    keeps carbon conserved. Every product uses this one form, so regenerating with
+    the default service lives reproduces WPs_Tracker_paras.csv.
+    """
     d2 = _gp(para, prod, 'disposal_2', 0.0)
     d3 = _gp(para, prod, 'disposal_3', L)
-    L = max(float(L), 1e-6)
-    # Paper always uses the constant-rate form; solid wood uses the bell curve.
-    # Decide by product, not by whether disposal_2 is zero.
-    if prod in PAPER_PRODUCTS:
-        return SQRT2PI * 0.5 / L, 0.0, L
-    if d2 and d2 > 0:
-        cv2 = 1.0 / (2.0 * d2 * d3)
-        dp2 = 1.0 / (2.0 * cv2 * L)
-        dp1 = SQRT2PI * math.sqrt(dp2 / (math.pi * L))
-        return dp1, dp2, L
-    return SQRT2PI * 0.5 / L, 0.0, L
+    L  = max(float(L), 1e-6)
+    if not d2 or d2 <= 0 or not d3 or d3 <= 0:
+        d2, d3 = 0.5, 1.0                    # fallback: spread equal to the service life
+    dp2 = float(d2) * float(d3) / L          # same spread-to-life ratio as the default
+    dp1 = EXP_SQRT2PI / bell_area(dp2, L)   # height that makes the area exactly 1
+    return dp1, dp2, L
 
 
 def generate_params(para, service_lives):

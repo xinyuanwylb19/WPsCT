@@ -72,17 +72,21 @@ def disposal_CF(years, production, dp1, dp2, dp3):
     production = pd.Series(production, dtype=float).reset_index(drop=True)
     arr = [float(production.iat[j]) if j < len(production) else 0.0 for j in range(years)]
 
-    # Precompute the in-use survival fraction and disposal rate by age ONCE, then
-    # convolve.  (Integrating inside the double loop is ~20x slower in the browser.)
+    # Precompute the in-use survival fraction by age ONCE, then convolve.
+    # (Integrating inside the double loop is ~20x slower in the browser.)
     IU = [0.0] * (years + 1)
-    DR = [0.0] * (years + 1)
     for a in range(years + 1):
         val = 1.0 - integrate.quad(
             lambda tt: disposal_rate(tt, dp1, dp2, dp3),
             0.0, float(a)
         )[0]
         IU[a] = min(1.0, max(0.0, float(val)))
-        DR[a] = disposal_rate(float(a), dp1, dp2, dp3)
+
+    # Carbon disposed during a year is the drop in the survival fraction over that
+    # year, so in-use plus cumulative disposal always equals production.
+    DR = [0.0] * (years + 1)
+    for a in range(1, years + 1):
+        DR[a] = IU[a - 1] - IU[a]
 
     inuse = pd.Series(index=range(years), dtype=float)
     dispos = pd.Series(index=range(years), dtype=float)
@@ -137,9 +141,9 @@ def survive(t, k1, k2):
     return 0.0 if c >= 1.0 else min(1.0, max(0.0, 1.0 - c))
 
 def landfill_CF(years, landfill_input, k1, k2):
-    
+
     landfill_input = pd.Series(landfill_input, dtype=float).reset_index(drop=True)
-    n_in = len(landfill_input)
+    n_in = min(int(years), len(landfill_input))
     arr = [float(landfill_input.iat[i]) if i < n_in else 0.0 for i in range(n_in)]
 
     # Precompute survival for ages 0..years
@@ -160,7 +164,7 @@ def landfill_CF(years, landfill_input, k1, k2):
     for i in range(n_in):
         inc = arr[i]
         dec = (prev + inc) - landfill_pool[i]
-        landfill_decayed[i] = 0.0 if dec < 0.0 and dec > -1e-12 else max(0.0, dec)
+        landfill_decayed[i] = max(0.0, dec)
         prev = landfill_pool[i]
 
     return landfill_pool, landfill_decayed

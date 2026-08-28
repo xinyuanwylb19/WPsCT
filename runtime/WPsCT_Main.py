@@ -151,3 +151,9 @@ def tracker (wp_data, wp_para, savefile):
 
     out.to_csv(f'{savefile}', index=False)
     print(f"Saved results -> {savefile}")
+
+
+#------------------------------------------------------------------------------
+# Run on one of the bundled examples.
+if __name__ == '__main__':
+    tracker('Example_ME.csv', 'WPs_Tracker_paras.csv', 'WPsCT_Results.csv')

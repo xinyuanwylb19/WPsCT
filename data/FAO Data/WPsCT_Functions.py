@@ -82,21 +82,29 @@ def disposal_CF(years, production, dp1, dp2, dp3):
     inuse = pd.Series(index=range(years), dtype=float)
     dispos = pd.Series(index=range(years), dtype=float)
 
-    def in_use(age):
+    # Precompute the in-use survival fraction by age ONCE, then convolve.
+    IU = [0.0] * (years + 1)
+    for a in range(years + 1):
         val = 1.0 - integrate.quad(
             lambda tt: disposal_rate(tt, dp1, dp2, dp3),
-            0.0, float(age)
+            0.0, float(a)
         )[0]
-        return min(1.0, max(0.0, float(val)))
+        IU[a] = min(1.0, max(0.0, float(val)))
+
+    # Carbon disposed during a year is the drop in the survival fraction over that
+    # year, so in-use plus cumulative disposal always equals production.
+    DR = [0.0] * (years + 1)
+    for a in range(1, years + 1):
+        DR[a] = IU[a - 1] - IU[a]
 
     for i in range(years):
         s = 0.0
         d = 0.0
         for j in range(i + 1):
             c = float(production.iat[j] if j < len(production) else 0.0)
-            age = float(i - j + 1)
-            s += c * in_use(age)
-            d += c * disposal_rate(age, dp1, dp2, dp3)
+            age = i - j + 1
+            s += c * IU[age]
+            d += c * DR[age]
         inuse.iat[i] = s
         dispos.iat[i] = d
 
@@ -137,9 +145,9 @@ def survive(t, k1, k2):
     return S
 
 def landfill_CF(years, landfill_input, k1, k2):
-    
+
     landfill_input = pd.Series(landfill_input, dtype=float).reset_index(drop=True)
-    n_in = len(landfill_input)
+    n_in = min(int(years), len(landfill_input))
     arr = [float(landfill_input.iat[i]) if i < n_in else 0.0 for i in range(n_in)]
 
     # Precompute survival for ages 0..years
@@ -160,7 +168,7 @@ def landfill_CF(years, landfill_input, k1, k2):
     for i in range(n_in):
         inc = arr[i]
         dec = (prev + inc) - landfill_pool[i]
-        landfill_decayed[i] = 0.0 if dec < 0.0 and dec > -1e-12 else max(0.0, dec)
+        landfill_decayed[i] = max(0.0, dec)
         prev = landfill_pool[i]
 
     return landfill_pool, landfill_decayed
@@ -252,8 +260,96 @@ TROPICAL_DEVELOPING_COUNTRIES = {
 # Argentina, Chile, Colombia, etc.
 
 
+# FAO reports regional and economic groupings alongside countries. They are not
+# countries and must not be given a single country group: a region's carbon is the
+# sum of its members, each run with its own parameters. Members are defined for the
+# World and the five continents below; the rest are flagged when they are processed.
+AGGREGATE_AREAS = {
+    "Africa", "Americas", "Asia", "Australia and New Zealand", "Caribbean",
+    "Central America", "Central Asia", "Eastern Africa", "Eastern Asia",
+    "Eastern Europe", "Europe", "European Union (27)",
+    "Land Locked Developing Countries (LLDCs)", "Least Developed Countries (LDCs)",
+    "Low Income Food Deficit Countries (LIFDCs)", "Melanesia", "Micronesia",
+    "Middle Africa", "Net Food Importing Developing Countries (NFIDCs)",
+    "Northern Africa", "Northern America", "Northern Europe", "Oceania",
+    "Polynesia", "Small Island Developing States (SIDS)", "South America",
+    "South-eastern Asia", "Southern Africa", "Southern Asia", "Southern Europe",
+    "Western Africa", "Western Asia", "Western Europe", "World",
+}
+
+
+# Continent membership, used both to rebuild continental totals and to check them.
+CONTINENT_MEMBERS = {
+    "Africa": {
+        "Algeria","Angola","Benin","Botswana","Burkina Faso","Burundi","Cabo Verde",
+        "Cameroon","Central African Republic","Chad","Comoros","Congo",
+        "Côte d'Ivoire","Democratic Republic of the Congo","Djibouti","Egypt",
+        "Equatorial Guinea","Eritrea","Eswatini","Ethiopia","Ethiopia PDR","Gabon",
+        "Gambia","Ghana","Guinea","Guinea-Bissau","Kenya","Lesotho","Liberia",
+        "Libya","Madagascar","Malawi","Mali","Mauritania","Mauritius","Mayotte",
+        "Morocco","Mozambique","Namibia","Niger","Nigeria","Réunion","Rwanda",
+        "Sao Tome and Principe","Senegal","Seychelles","Sierra Leone","Somalia",
+        "South Africa","South Sudan","Sudan","Sudan (former)","Tanzania",
+        "Togo","Tunisia","Uganda","United Republic of Tanzania","Western Sahara",
+        "Zambia","Zimbabwe",
+    },
+    "Americas": {
+        "Anguilla","Antigua and Barbuda","Argentina","Aruba","Bahamas","Barbados",
+        "Belize","Bolivia (Plurinational State of)","Brazil","British Virgin Islands",
+        "Canada","Cayman Islands","Chile","Colombia","Costa Rica","Cuba","Curaçao",
+        "Dominica","Dominican Republic","Ecuador","El Salvador","Falkland Islands (Malvinas)",
+        "French Guiana","Grenada","Guadeloupe","Guatemala","Guyana","Haiti","Honduras",
+        "Jamaica","Martinique","Mexico","Montserrat","Nicaragua","Panama","Paraguay",
+        "Peru","Puerto Rico","Saint Kitts and Nevis","Saint Lucia",
+        "Saint Vincent and the Grenadines","Sint Maarten (Dutch part)",
+        "Saint Martin (French part)","Saint Pierre and Miquelon",
+        "Suriname","Trinidad and Tobago","Turks and Caicos Islands",
+        "United States of America","Uruguay","Venezuela (Bolivarian Republic of)",
+        "Virgin Islands, US",
+    },
+    "Asia": {
+        "Afghanistan","Armenia","Azerbaijan","Bahrain","Bangladesh","Bhutan",
+        "Brunei Darussalam","Cambodia","China","China, mainland","China, Hong Kong SAR",
+        "China, Macao SAR","China, Taiwan Province of","Cyprus","Georgia",
+        "India","Indonesia","Iran (Islamic Republic of)","Iraq","Israel","Japan",
+        "Jordan","Kazakhstan","Kuwait","Kyrgyzstan","Lao People's Democratic Republic",
+        "Lebanon","Malaysia","Maldives","Mongolia","Myanmar","Nepal","Oman",
+        "Pakistan","Palestine","Philippines","Qatar","Republic of Korea",
+        "Saudi Arabia","Singapore","Sri Lanka","Syrian Arab Republic","Tajikistan",
+        "Thailand","Timor-Leste","Türkiye","Turkmenistan","United Arab Emirates",
+        "Uzbekistan","Viet Nam","Yemen",
+        "Democratic People's Republic of Korea",
+    },
+    "Europe": {
+        "Albania","Andorra","Austria","Belarus","Belgium","Belgium-Luxembourg",
+        "Bosnia and Herzegovina","Bulgaria","Croatia","Czechia","Czechoslovakia",
+        "Denmark","Estonia","Faroe Islands","Finland","France","Germany","Gibraltar",
+        "Greece","Greenland","Hungary","Iceland","Ireland","Italy","Latvia",
+        "Liechtenstein","Lithuania","Luxembourg","Malta","Monaco","Montenegro",
+        "Netherlands (Kingdom of the)","North Macedonia","Norway","Poland","Portugal",
+        "Republic of Moldova","Romania","Russian Federation","San Marino","Serbia",
+        "Serbia and Montenegro","Slovakia","Slovenia","Spain","Sweden","Switzerland",
+        "Ukraine","United Kingdom of Great Britain and Northern Ireland","USSR",
+        "Yugoslav SFR",
+    },
+    "Oceania": {
+        "American Samoa","Australia","Christmas Island","Cocos (Keeling) Islands",
+        "Cook Islands","Fiji","French Polynesia","Guam","Kiribati","Marshall Islands",
+        "Micronesia (Federated States of)","Nauru","New Caledonia","New Zealand",
+        "Niue","Norfolk Island","Northern Mariana Islands","Palau","Papua New Guinea",
+        "Pitcairn","Polynesia","Samoa","Solomon Islands","Tokelau","Tonga","Tuvalu",
+        "Vanuatu","Wallis and Futuna Islands",
+    },
+}
+
+
 def get_country_group(country_name: str) -> str:
-    """Return 'developed', 'emerging', or 'tropical_developing' for a country."""
+    """Return 'developed', 'emerging', or 'tropical_developing' for a country.
+
+    Aggregate areas have no single group; they are rebuilt from their members in
+    run_all_countries(). The value returned here is only a placeholder for the
+    aggregates whose membership is not defined.
+    """
     if country_name in DEVELOPED_COUNTRIES:
         return "developed"
     if country_name in TROPICAL_DEVELOPING_COUNTRIES:
@@ -714,19 +810,38 @@ def process_country(long_df, country_name, output_dir, approach="consumption"):
         "Other industrial roundwood, non-coniferous (production)": "m3_hard",
         "Other industrial roundwood, all species (export/import, 1961-1989)": "m3_mixed",
     }
-    for oir_item, oir_unit in _OIR_FALLBACK_ITEMS.items():
+    # Coniferous and non-coniferous are two halves of the same total, so both are
+    # added. Only the 1961-1989 all-species series is an alternative to them.
+    _OIR_SPECIES = ["Other industrial roundwood, coniferous (production)",
+                    "Other industrial roundwood, non-coniferous (production)"]
+    species_years = set()
+    for oir_item in _OIR_SPECIES:
         for _, row in pivot[pivot["Item"] == oir_item].iterrows():
             year = row["Year"]
             v    = row["Consumption"]
             if v <= 0 or year in oir_covered:
                 continue
-            kgC     = to_kgC(v, oir_unit, p)
+            kgC     = to_kgC(v, _OIR_FALLBACK_ITEMS[oir_item], p)
             yr_mask = result["Year"] == year
             result.loc[yr_mask, "Exterior"]  += kgC * p["other_indround_exterior_frac"]
             result.loc[yr_mask, "Household"] += kgC * p["other_indround_household_frac"]
             covered["Exterior"].add(year)
             covered["Household"].add(year)
-            oir_covered.add(year)   # prevent other fallback items from re-adding
+            species_years.add(year)
+    oir_covered |= species_years
+
+    for _, row in pivot[pivot["Item"] == "Other industrial roundwood, all species (export/import, 1961-1989)"].iterrows():
+        year = row["Year"]
+        v    = row["Consumption"]
+        if v <= 0 or year in oir_covered:
+            continue
+        kgC     = to_kgC(v, "m3_mixed", p)
+        yr_mask = result["Year"] == year
+        result.loc[yr_mask, "Exterior"]  += kgC * p["other_indround_exterior_frac"]
+        result.loc[yr_mask, "Household"] += kgC * p["other_indround_household_frac"]
+        covered["Exterior"].add(year)
+        covered["Household"].add(year)
+        oir_covered.add(year)
 
     # "Fibreboard" aggregate → only for years without specific fibreboard
     for _, row in pivot[pivot["Item"] == "Fibreboard"].iterrows():
@@ -910,68 +1025,6 @@ def run_regional_consistency_check(input_dir="WPsCT_Input",
     # We use a fallback approach: identify which country-level CSVs have their
     # names also present in the FAO raw file, and group by continent assignment.
     # Since full hierarchy metadata is not in the bulk CSV, we use known lists.
-    CONTINENT_MEMBERS = {
-        "Africa": {
-            "Algeria","Angola","Benin","Botswana","Burkina Faso","Burundi","Cabo Verde",
-            "Cameroon","Central African Republic","Chad","Comoros","Congo",
-            "Côte d'Ivoire","Democratic Republic of the Congo","Djibouti","Egypt",
-            "Equatorial Guinea","Eritrea","Eswatini","Ethiopia","Ethiopia PDR","Gabon",
-            "Gambia","Ghana","Guinea","Guinea-Bissau","Kenya","Lesotho","Liberia",
-            "Libya","Madagascar","Malawi","Mali","Mauritania","Mauritius","Mayotte",
-            "Morocco","Mozambique","Namibia","Niger","Nigeria","Réunion","Rwanda",
-            "Sao Tome and Principe","Senegal","Seychelles","Sierra Leone","Somalia",
-            "South Africa","South Sudan","Sudan","Sudan (former)","Tanzania",
-            "Togo","Tunisia","Uganda","United Republic of Tanzania","Western Sahara",
-            "Zambia","Zimbabwe",
-        },
-        "Americas": {
-            "Anguilla","Antigua and Barbuda","Argentina","Aruba","Bahamas","Barbados",
-            "Belize","Bolivia (Plurinational State of)","Brazil","British Virgin Islands",
-            "Canada","Cayman Islands","Chile","Colombia","Costa Rica","Cuba","Curaçao",
-            "Dominica","Dominican Republic","Ecuador","El Salvador","Falkland Islands (Malvinas)",
-            "French Guiana","Grenada","Guadeloupe","Guatemala","Guyana","Haiti","Honduras",
-            "Jamaica","Martinique","Mexico","Montserrat","Nicaragua","Panama","Paraguay",
-            "Peru","Puerto Rico","Saint Kitts and Nevis","Saint Lucia",
-            "Saint Vincent and the Grenadines","Sint Maarten (Dutch part)",
-            "Saint Martin (French part)","Saint Pierre and Miquelon",
-            "Suriname","Trinidad and Tobago","Turks and Caicos Islands",
-            "United States of America","Uruguay","Venezuela (Bolivarian Republic of)",
-            "Virgin Islands, US",
-        },
-        "Asia": {
-            "Afghanistan","Armenia","Azerbaijan","Bahrain","Bangladesh","Bhutan",
-            "Brunei Darussalam","Cambodia","China","China, mainland","China, Hong Kong SAR",
-            "China, Macao SAR","China, Taiwan Province of","Cyprus","Georgia",
-            "India","Indonesia","Iran (Islamic Republic of)","Iraq","Israel","Japan",
-            "Jordan","Kazakhstan","Kuwait","Kyrgyzstan","Lao People's Democratic Republic",
-            "Lebanon","Malaysia","Maldives","Mongolia","Myanmar","Nepal","Oman",
-            "Pakistan","Palestine","Philippines","Qatar","Republic of Korea",
-            "Saudi Arabia","Singapore","Sri Lanka","Syrian Arab Republic","Tajikistan",
-            "Thailand","Timor-Leste","Türkiye","Turkmenistan","United Arab Emirates",
-            "Uzbekistan","Viet Nam","Yemen",
-            "Democratic People's Republic of Korea",
-        },
-        "Europe": {
-            "Albania","Andorra","Austria","Belarus","Belgium","Belgium-Luxembourg",
-            "Bosnia and Herzegovina","Bulgaria","Croatia","Czechia","Czechoslovakia",
-            "Denmark","Estonia","Faroe Islands","Finland","France","Germany","Gibraltar",
-            "Greece","Greenland","Hungary","Iceland","Ireland","Italy","Latvia",
-            "Liechtenstein","Lithuania","Luxembourg","Malta","Monaco","Montenegro",
-            "Netherlands (Kingdom of the)","North Macedonia","Norway","Poland","Portugal",
-            "Republic of Moldova","Romania","Russian Federation","San Marino","Serbia",
-            "Serbia and Montenegro","Slovakia","Slovenia","Spain","Sweden","Switzerland",
-            "Ukraine","United Kingdom of Great Britain and Northern Ireland","USSR",
-            "Yugoslav SFR",
-        },
-        "Oceania": {
-            "American Samoa","Australia","Christmas Island","Cocos (Keeling) Islands",
-            "Cook Islands","Fiji","French Polynesia","Guam","Kiribati","Marshall Islands",
-            "Micronesia (Federated States of)","Nauru","New Caledonia","New Zealand",
-            "Niue","Norfolk Island","Northern Mariana Islands","Palau","Papua New Guinea",
-            "Pitcairn","Polynesia","Samoa","Solomon Islands","Tokelau","Tonga","Tuvalu",
-            "Vanuatu","Wallis and Futuna Islands",
-        },
-    }
 
     discrepancy_report = {}
 
@@ -1332,6 +1385,36 @@ def run_all_countries(input_dir        = 'WPsCT_Input',
         except Exception as e:
             print(f"  [error] {country_name}: {e}")
             skipped.append(country_name)
+
+    # Aggregate areas are not countries. Rebuild the ones whose membership is known
+    # by summing their members, so a region always equals the sum of its parts.
+    if combined:
+        by_area = {df['Country'].iat[0]: df for df in combined}
+        members = dict(CONTINENT_MEMBERS)
+        members['World'] = {n for n in by_area if n not in AGGREGATE_AREAS}
+        rebuilt, unresolved = [], []
+        for area in sorted(AGGREGATE_AREAS):
+            if area not in by_area:
+                continue
+            if area not in members:
+                unresolved.append(area)
+                continue
+            parts = [by_area[n] for n in members[area] if n in by_area]
+            if not parts:
+                unresolved.append(area)
+                continue
+            summed = (pd.concat(parts, ignore_index=True)
+                        .drop(columns='Country')
+                        .groupby('Year', as_index=False).sum())
+            summed.insert(0, 'Country', area)
+            by_area[area] = summed[by_area[area].columns]
+            rebuilt.append(f'{area} ({len(parts)})')
+        combined = [by_area[df['Country'].iat[0]] for df in combined]
+        if rebuilt:
+            print(f"  Rebuilt from member countries: {', '.join(rebuilt)}")
+        if unresolved:
+            print(f"  [note] no membership defined, kept FAO's own row under one "
+                  f"parameter set: {', '.join(unresolved)}")
 
     if combined:
         pd.concat(combined, ignore_index=True).to_csv(output_path, index=False)
