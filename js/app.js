@@ -423,7 +423,6 @@ function statTile(label, value){
           glDrawStockChart(rows);
           glDrawEmisChart(rows);
           glDrawSankey(rows, name);
-          glValRefresh();
           glDrawTable(rows, name);
           const dlBtn = document.getElementById('gl-dl-btn');
           if (dlBtn) dlBtn.classList.remove('hidden');
@@ -793,116 +792,6 @@ function statTile(label, value){
              toImageButtonOptions:{format:'png',scale:2,filename:'WPsCT_sankey_'+String(name).replace(/[^a-z0-9]+/gi,'_')}});
         }
         window.glToggleSankeyBio = function(){ if (globalSelectedData) glDrawSankey(globalSelectedData, globalSelectedLocation||''); };
-
-
-        /* ---- Validation overlay: model vs reference series ---- */
-        let glValRef = null;   // {label, byYear:{year:kg}, synthetic:bool}
-        function glToKg(v){ return globalUnit==='Tg'? v*1e9 : globalUnit==='Pg'? v*1e12 : v; }
-        function glValModeled(rows){
-          const m = (document.getElementById('gl-val-metric')||{}).value || 'inuse';
-          return rows.map(r=>{
-            let v = IN_USE_COLS.reduce((s,c)=>s+(r[c]||0),0);
-            if (m==='inuse_lf') v += (r.LF_Stock_Total||0);
-            else if (m==='total') v += (r.LF_Stock_Total||0)+(r.Biochar_Stock||0);
-            return { year: Math.round(r.Year), kg: v };
-          });
-        }
-        function glValRefresh(){
-          const plotEl = document.getElementById('gl-val-plot'); if (!plotEl) return;
-          const tEl = document.getElementById('gl-val-title');
-          if (tEl) tEl.textContent = globalSelectedLocation ? ('- '+globalSelectedLocation) : '';
-          const sEl = document.getElementById('gl-val-stats');
-          if (!globalSelectedData){
-            Plotly.purge(plotEl);
-            if (sEl) sEl.textContent = 'Select a country, then upload a reference series (a table with Year, Value columns) or load the example.';
-            return;
-          }
-          const modeled = glValModeled(globalSelectedData);
-          const traces = [{ x:modeled.map(d=>d.year), y:modeled.map(d=>fromKg(d.kg)),
-            mode:'lines', name:'Model', line:{color:'#4f46e5',width:2.5},
-            hovertemplate:'%{y:.3f} '+unitLbl()+'<extra>Model</extra>' }];
-          let statsTxt = 'Upload a reference series (a table with Year, Value columns) or load the example to compare.';
-          if (glValRef){
-            const refYears = Object.keys(glValRef.byYear).map(Number).sort((a,b)=>a-b);
-            traces.push({ x:refYears, y:refYears.map(y=>fromKg(glValRef.byYear[y])),
-              mode:'lines+markers', name:glValRef.label,
-              line:{color:'#ea580c',width:2,dash:'dash'}, marker:{size:6,color:'#ea580c'},
-              hovertemplate:'%{y:.3f} '+unitLbl()+'<extra>'+glValRef.label+'</extra>' });
-            const modByYear = {}; modeled.forEach(d=>modByYear[d.year]=d.kg);
-            let n=0, sumPct=0, sumSq=0;
-            refYears.forEach(y=>{ const mo=modByYear[y];
-              if (mo!=null && mo!==0){ const rf=glValRef.byYear[y]; sumPct += (rf-mo)/mo*100; sumSq += (rf-mo)*(rf-mo); n++; } });
-            if (n){ const meanPct=sumPct/n, rmse=fromKg(Math.sqrt(sumSq/n));
-              statsTxt = (glValRef.note ? glValRef.note + '  ·  ' : '') +
-                'Matched years: '+n+'  ·  Mean difference: '+(meanPct>=0?'+':'')+meanPct.toFixed(1)+'% (reference vs model)  ·  RMSE: '+
-                (rmse>=10?rmse.toFixed(1):rmse.toFixed(3))+' '+unitLbl();
-            } else { statsTxt = 'No overlapping years between the reference series and the model.'; }
-          }
-          Plotly.newPlot('gl-val-plot', traces, glLayout('Year','Carbon ('+unitLbl()+')'),
-            {responsive:true,displayModeBar:true,displaylogo:false,modeBarButtonsToRemove:['select2d','lasso2d'],
-             toImageButtonOptions:{format:'png',scale:2,filename:'WPsCT_validation'}});
-          if (sEl) sEl.textContent = statsTxt;
-        }
-        window.glValRefresh = glValRefresh;
-        window.glValUpload = function(ev){
-          const f = ev.target.files && ev.target.files[0]; if (!f) return;
-          const reader = new FileReader();
-          reader.onload = () => {
-            try{
-              const lines = String(reader.result).split(/\r?\n/).filter(l=>l.trim().length);
-              if (!lines.length){ alert('Empty file.'); return; }
-              const byYear = {}; let start = 0;
-              if (isNaN(parseFloat(lines[0].split(',')[0]))) start = 1;   // skip header row
-              for (let i=start;i<lines.length;i++){ const p=lines[i].split(','); const y=parseInt(p[0],10); const v=parseFloat(p[1]);
-                if (!isNaN(y) && !isNaN(v)) byYear[y]=glToKg(v); }
-              if (!Object.keys(byYear).length){ alert('No "Year,Value" rows found in the table.'); return; }
-              glValRef = { label:'Reference: '+f.name, byYear, synthetic:false };
-              glValRefresh();
-            }catch(e){ console.error(e); alert('Could not read that file.'); }
-          };
-          reader.readAsText(f);
-          ev.target.value = '';
-        };
-        // Published literature anchor points for cross-comparison (values in kg C; boundaries differ from this model).
-        const GL_LIT_REFS = {
-          world:    { location:'World', metric:'inuse', label:'Published: Zhang et al. (2020)',
-                      note:'Global in-use HWP, cumulative since 1992 (narrower baseline than this model)',
-                      byYear:{ 2015: 2938e9 } },
-          usa:      { location:'United States of America', metric:'inuse', label:'Published: USDA / EPA inventory',
-                      note:'US in-use HWP stock, 2019 (baseline and boundary differ)',
-                      byYear:{ 2019: 1532e9 } },
-          china:    { location:'China, mainland', metric:'inuse', label:'Published: Zhao et al. (2023)',
-                      note:'China end-use HWP, accumulated 1961-2020',
-                      byYear:{ 2020: 893e9 } },
-          china_sr: { location:'China, mainland', metric:'inuse', label:'Published: Scientific Reports (2023)',
-                      note:'China wood products (excludes bamboo), production approach, 1987-2020',
-                      byYear:{ 2020: 328.7e9 } },
-          japan:    { location:'Japan', metric:'inuse', label:'Published: Hashimoto and Moriguchi (2004)',
-                      note:'Japan HWP stock, 1990 and 2000 (production approach)',
-                      byYear:{ 1990: 284e9, 2000: 338e9 } }
-        };
-        window.glValLoadLit = async function(key){
-          if(!key) return;
-          const ref = GL_LIT_REFS[key]; if(!ref) return;
-          const mSel = document.getElementById('gl-val-metric'); if(mSel) mSel.value = ref.metric;
-          await glSelectLocation(ref.location);
-          glValRef = { label: ref.label, byYear: ref.byYear, synthetic:false, note: ref.note };
-          glValRefresh();
-        };
-        window.glValExample = function(){
-          if (!globalSelectedData){ alert('Select a country or region first.'); return; }
-          const modeled = glValModeled(globalSelectedData);
-          let seed = 98765; const rnd = ()=>{ seed=(seed*1103515245+12345)&0x7fffffff; return seed/0x7fffffff; };
-          const byYear = {};
-          modeled.forEach((d,i)=>{ if (i%5!==0 && i!==modeled.length-1) return;   // sample ~every 5 yr
-            const bias = 0.88 + 0.08*Math.sin(d.year/9);   // slow systematic offset ~0.80-0.96
-            const noise = 1 + (rnd()-0.5)*0.06;            // small noise
-            byYear[d.year] = Math.max(0, d.kg*bias*noise);
-          });
-          glValRef = { label:'Synthetic example', byYear, synthetic:true };
-          glValRefresh();
-        };
-        window.glValClear = function(){ glValRef = null; glValRefresh(); };
 
         /* ---- Shareable view URLs (encode tab + Global selection in the hash) ---- */
         function appCurrentTab(){ const p=document.querySelector('.tab-panel.active'); return p ? (p.id||'').replace('tab-','') : null; }

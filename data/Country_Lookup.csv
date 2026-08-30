@@ -1,4 +1,4 @@
-ISO3,Country,Population,ForestArea_km2
+﻿ISO3,Country,Population,ForestArea_km2
 ABW,Aruba,107359,4.2
 AFG,Afghanistan,41454761,12084.4
 AGO,Angola,36749906,660523.1
@@ -39,7 +39,7 @@ CCK,Cocos (Keeling) Islands,,
 CHE,Switzerland,8888822,12725.5
 CHL,Chile,19658835,183336.2
 CHN,China,1410710000,2218580
-CIV,Ivoire,31165654,27238.3
+CIV,Côte d'Ivoire,31165654,27238.3
 CMR,Cameroon,28372687,202844.8
 COD,Democratic Republic of the Congo,105789731,1250540
 COG,Congo,6182885,219310
@@ -114,7 +114,7 @@ KIR,Kiribati,132530,11.8
 KNA,Saint Kitts and Nevis,46758,110
 KOR,Republic of Korea,51712619,62770
 KWT,Kuwait,4853420,62.5
-LAO,s Democratic Republic,7664993,165610
+LAO,Lao People's Democratic Republic,7664993,165610
 LBN,Lebanon,5773493,1439.3
 LBR,Liberia,5493031,75871.8
 LBY,Libya,7305659,2170
@@ -165,7 +165,7 @@ PHL,Philippines,114891199,72234.8
 PLW,Palau,17727,414.9
 PNG,Papua New Guinea,10389635,358222.3
 POL,Poland,36687353,94950
-PRK,s Republic of Korea,26418204,60090
+PRK,Democratic People's Republic of Korea,26418204,60090
 PRT,Portugal,10578174,33120
 PRY,Paraguay,6844146,158229.3
 PSE,Palestine,5165775,101.4
