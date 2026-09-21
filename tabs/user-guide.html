@@ -51,7 +51,7 @@
 
           <div class="bg-white rounded-2xl shadow p-6">
             <h2 class="text-lg font-bold text-indigo-800 mb-1">📂 Input Data</h2>
-            <p class="text-sm text-gray-500 mb-4">The production data file must be a comma-separated (.csv) file with the following columns. All numeric values must be in <strong>kg C/yr</strong>.</p>
+            <p class="text-sm text-gray-500 mb-4">The production data file must be a comma-separated (.csv) file with the following columns. Values are in mass of carbon per year (default <strong>kg C/yr</strong>). For data in lb, t, Mt, or Tg C, select the matching Input Units. A missing product column is treated as zero.</p>
 
             <div class="overflow-x-auto rounded-xl border border-gray-100">
               <table class="w-full text-xs">
@@ -79,8 +79,8 @@
             <h3 class="text-sm font-bold text-gray-700 mt-5 mb-2">Example (first 3 rows)</h3>
             <div class="overflow-x-auto rounded-xl border border-gray-100">
               <table class="w-full text-xs font-mono">
-                <thead><tr class="bg-indigo-700 text-white"><th class="px-2 py-1.5 text-right font-semibold">Year</th><th class="px-2 py-1.5 text-right font-semibold">Biofuel</th><th class="px-2 py-1.5 text-right font-semibold">Biochar</th><th class="px-2 py-1.5 text-right font-semibold">Construction</th><th class="px-2 py-1.5 text-right font-semibold">Exterior</th><th class="px-2 py-1.5 text-right font-semibold">Household</th><th class="px-2 py-1.5 text-right font-semibold">Graphic Paper</th><th class="px-2 py-1.5 text-right font-semibold">Household Paper</th><th class="px-2 py-1.5 text-right font-semibold">Other Paper</th></tr></thead>
-                <tbody><tr class="bg-gray-50"><td class="px-2 py-1.5 text-right">1961</td><td class="px-2 py-1.5 text-right">285763275</td><td class="px-2 py-1.5 text-right">12447848</td><td class="px-2 py-1.5 text-right">179817095</td><td class="px-2 py-1.5 text-right">74300620</td><td class="px-2 py-1.5 text-right">194099473</td><td class="px-2 py-1.5 text-right">173635256</td><td class="px-2 py-1.5 text-right">264196012</td><td class="px-2 py-1.5 text-right">59754273</td></tr><tr class="bg-white"><td class="px-2 py-1.5 text-right">1962</td><td class="px-2 py-1.5 text-right">282588127</td><td class="px-2 py-1.5 text-right">12004344</td><td class="px-2 py-1.5 text-right">188776252</td><td class="px-2 py-1.5 text-right">99492208</td><td class="px-2 py-1.5 text-right">170293682</td><td class="px-2 py-1.5 text-right">169884778</td><td class="px-2 py-1.5 text-right">270564088</td><td class="px-2 py-1.5 text-right">56458288</td></tr><tr class="bg-gray-50"><td class="px-2 py-1.5 text-right">1963</td><td class="px-2 py-1.5 text-right">293701143</td><td class="px-2 py-1.5 text-right">17763045</td><td class="px-2 py-1.5 text-right">189602353</td><td class="px-2 py-1.5 text-right">71383467</td><td class="px-2 py-1.5 text-right">163003331</td><td class="px-2 py-1.5 text-right">179487717</td><td class="px-2 py-1.5 text-right">297712002</td><td class="px-2 py-1.5 text-right">55771351</td></tr></tbody>
+                <thead><tr class="bg-indigo-700 text-white"><th class="px-2 py-1.5 text-right font-semibold">Year</th><th class="px-2 py-1.5 text-right font-semibold">Biofuel</th><th class="px-2 py-1.5 text-right font-semibold">Biochar</th><th class="px-2 py-1.5 text-right font-semibold">Construction</th><th class="px-2 py-1.5 text-right font-semibold">Exterior</th><th class="px-2 py-1.5 text-right font-semibold">Household</th><th class="px-2 py-1.5 text-right font-semibold">Graphic Paper</th><th class="px-2 py-1.5 text-right font-semibold">Other Paper</th><th class="px-2 py-1.5 text-right font-semibold">Household Paper</th></tr></thead>
+                <tbody><tr class="bg-gray-50"><td class="px-2 py-1.5 text-right">1961</td><td class="px-2 py-1.5 text-right">285763275</td><td class="px-2 py-1.5 text-right">12447848</td><td class="px-2 py-1.5 text-right">179817095</td><td class="px-2 py-1.5 text-right">74300620</td><td class="px-2 py-1.5 text-right">194099473</td><td class="px-2 py-1.5 text-right">260647183</td><td class="px-2 py-1.5 text-right">90560756</td><td class="px-2 py-1.5 text-right">59754273</td></tr><tr class="bg-white"><td class="px-2 py-1.5 text-right">1962</td><td class="px-2 py-1.5 text-right">282588127</td><td class="px-2 py-1.5 text-right">12004344</td><td class="px-2 py-1.5 text-right">188776252</td><td class="px-2 py-1.5 text-right">99492208</td><td class="px-2 py-1.5 text-right">170293682</td><td class="px-2 py-1.5 text-right">248824433</td><td class="px-2 py-1.5 text-right">100679310</td><td class="px-2 py-1.5 text-right">56458288</td></tr><tr class="bg-gray-50"><td class="px-2 py-1.5 text-right">1963</td><td class="px-2 py-1.5 text-right">293701143</td><td class="px-2 py-1.5 text-right">17763045</td><td class="px-2 py-1.5 text-right">189602353</td><td class="px-2 py-1.5 text-right">71383467</td><td class="px-2 py-1.5 text-right">163003331</td><td class="px-2 py-1.5 text-right">262005153</td><td class="px-2 py-1.5 text-right">118224285</td><td class="px-2 py-1.5 text-right">55771351</td></tr></tbody>
               </table>
             </div>
             <p class="text-xs text-gray-400 mt-2">💡 To convert from dry biomass weight to kg C: multiply by <strong>0.50</strong> (wood carbon fraction ≈ 50%).</p>
@@ -97,12 +97,12 @@
                 <table class="w-full text-xs">
                   <thead><tr class="bg-gray-50 text-gray-500"><th class="px-2 py-1.5 text-left">Product</th><th class="px-2 py-1.5">α</th><th class="px-2 py-1.5">β</th><th class="px-2 py-1.5">γ (yr)</th></tr></thead>
                   <tbody>
-                    <tr class="border-t"><td class="px-2 py-1.5 font-mono">Construction</td><td class="px-2 py-1.5 text-center">0.133</td><td class="px-2 py-1.5 text-center">0.028</td><td class="px-2 py-1.5 text-center">80</td></tr>
-                    <tr class="border-t bg-gray-50"><td class="px-2 py-1.5 font-mono">Exterior</td><td class="px-2 py-1.5 text-center">0.326</td><td class="px-2 py-1.5 text-center">0.041</td><td class="px-2 py-1.5 text-center">25</td></tr>
-                    <tr class="border-t"><td class="px-2 py-1.5 font-mono">Household</td><td class="px-2 py-1.5 text-center">0.265</td><td class="px-2 py-1.5 text-center">0.031</td><td class="px-2 py-1.5 text-center">30</td></tr>
-                    <tr class="border-t bg-gray-50"><td class="px-2 py-1.5 font-mono">Graphic Paper</td><td class="px-2 py-1.5 text-center">1.006</td><td class="px-2 py-1.5 text-center">0.0</td><td class="px-2 py-1.5 text-center">6</td></tr>
-                    <tr class="border-t"><td class="px-2 py-1.5 font-mono">Household Paper</td><td class="px-2 py-1.5 text-center">12.036</td><td class="px-2 py-1.5 text-center">0.0</td><td class="px-2 py-1.5 text-center">0.5</td></tr>
-                    <tr class="border-t bg-gray-50"><td class="px-2 py-1.5 font-mono">Other Paper</td><td class="px-2 py-1.5 text-center">6.036</td><td class="px-2 py-1.5 text-center">0.0</td><td class="px-2 py-1.5 text-center">1</td></tr>
+                    <tr class="border-t"><td class="px-2 py-1.5 font-mono">Construction</td><td class="px-2 py-1.5 text-center">0.133</td><td class="px-2 py-1.5 text-center">0.02861</td><td class="px-2 py-1.5 text-center">80</td></tr>
+                    <tr class="border-t bg-gray-50"><td class="px-2 py-1.5 font-mono">Exterior</td><td class="px-2 py-1.5 text-center">0.326</td><td class="px-2 py-1.5 text-center">0.04921</td><td class="px-2 py-1.5 text-center">25</td></tr>
+                    <tr class="border-t"><td class="px-2 py-1.5 font-mono">Household</td><td class="px-2 py-1.5 text-center">0.265</td><td class="px-2 py-1.5 text-center">0.03854</td><td class="px-2 py-1.5 text-center">30</td></tr>
+                    <tr class="border-t bg-gray-50"><td class="px-2 py-1.5 font-mono">Graphic Paper</td><td class="px-2 py-1.5 text-center">1.006</td><td class="px-2 py-1.5 text-center">0.0925</td><td class="px-2 py-1.5 text-center">6</td></tr>
+                    <tr class="border-t"><td class="px-2 py-1.5 font-mono">Household Paper</td><td class="px-2 py-1.5 text-center">12.036</td><td class="px-2 py-1.5 text-center">1.10079</td><td class="px-2 py-1.5 text-center">0.5</td></tr>
+                    <tr class="border-t bg-gray-50"><td class="px-2 py-1.5 font-mono">Other Paper</td><td class="px-2 py-1.5 text-center">6.036</td><td class="px-2 py-1.5 text-center">0.555</td><td class="px-2 py-1.5 text-center">1</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -125,10 +125,10 @@
                   <table class="w-full text-xs">
                     <thead><tr class="bg-gray-50 text-gray-500"><th class="px-2 py-1.5 text-left">Pool</th><th class="px-2 py-1.5">ξ</th><th class="px-2 py-1.5">ω (yr)</th></tr></thead>
                     <tbody>
-                      <tr class="border-t"><td class="px-2 py-1.5 font-mono">Construction</td><td class="px-2 py-1.5 text-center">0.997</td><td class="px-2 py-1.5 text-center">30</td></tr>
-                      <tr class="border-t bg-gray-50"><td class="px-2 py-1.5 font-mono">Exterior</td><td class="px-2 py-1.5 text-center">1.178</td><td class="px-2 py-1.5 text-center">20</td></tr>
-                      <tr class="border-t"><td class="px-2 py-1.5 font-mono">Household</td><td class="px-2 py-1.5 text-center">1.329</td><td class="px-2 py-1.5 text-center">15</td></tr>
-                      <tr class="border-t bg-gray-50"><td class="px-2 py-1.5 font-mono">Paper</td><td class="px-2 py-1.5 text-center">0.821</td><td class="px-2 py-1.5 text-center">5</td></tr>
+                      <tr class="border-t"><td class="px-2 py-1.5 font-mono">Construction</td><td class="px-2 py-1.5 text-center">1.007</td><td class="px-2 py-1.5 text-center">30</td></tr>
+                      <tr class="border-t bg-gray-50"><td class="px-2 py-1.5 font-mono">Exterior</td><td class="px-2 py-1.5 text-center">1.184</td><td class="px-2 py-1.5 text-center">20</td></tr>
+                      <tr class="border-t"><td class="px-2 py-1.5 font-mono">Household</td><td class="px-2 py-1.5 text-center">1.348</td><td class="px-2 py-1.5 text-center">15</td></tr>
+                      <tr class="border-t bg-gray-50"><td class="px-2 py-1.5 font-mono">Paper</td><td class="px-2 py-1.5 text-center">2.618</td><td class="px-2 py-1.5 text-center">5</td></tr>
                     </tbody>
                   </table>
                 </div>
