@@ -1,6 +1,6 @@
 # Wood Products Carbon Tracker — Web App
 
-This repository hosts a browser-based version of your Wood Products Carbon Tracker using **PyScript** (Python running in the browser via Pyodide).
+This repository hosts the browser-based Wood Products Carbon Tracker. Python runs in the browser through **Pyodide**.
 
 ## How it works
 
@@ -10,5 +10,4 @@ This repository hosts a browser-based version of your Wood Products Carbon Track
 
 * Input data CSV columns should match the examples.
 `Year,Biofuel,Biochar,Construction,Exterior,Household,Graphic Paper,Other Paper,Household Paper`
-* Parameter CSV file must match the default parameter file (see `/data/WPs\_Tracker\_paras.csv`).
-
+* Parameter CSV file must match the default parameter file (see `/runtime/WPs\_Tracker\_paras.csv`).
