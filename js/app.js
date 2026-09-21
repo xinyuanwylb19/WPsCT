@@ -23,7 +23,7 @@ function statTile(label, value){
         function worldDataUrls(ap){
           const fn = (ap==='production') ? 'World_Data_production.csv' : 'World_Data_consumption.csv';
           return [ 'data/World_Data/'+fn,
-                   'https://raw.githubusercontent.com/xinyuanwylb19/xinyuanwylb19-Wood-Products-Carbon-Tracker/main/data/World_Data/'+fn ];
+                   'https://raw.githubusercontent.com/xinyuanwylb19/WPsCT/main/data/World_Data/'+fn ];
         }
         let glCacheByApproach = {};   // approach -> {country: rows}
         let glDataPromises = {};      // approach -> Promise
@@ -350,6 +350,7 @@ function statTile(label, value){
         function unitLbl() { return globalUnit==='Tg'?'Tg C':globalUnit==='Pg'?'Pg C':'kg C'; }
         function fmtVal(v) {
           const x = fromKg(v);
+          if (x === 0) return '0';
           if (Math.abs(x)>=1000) return x.toFixed(0);
           if (Math.abs(x)>=10)   return x.toFixed(1);
           if (Math.abs(x)>=0.1)  return x.toFixed(2);
@@ -417,7 +418,7 @@ function statTile(label, value){
           setEl('gl-kpi-inuse',   fmtVal(totalInUse)  + ' ' + unitLbl());
           setEl('gl-kpi-lf',      fmtVal(last.LF_Stock_Total||0)  + ' ' + unitLbl());
           setEl('gl-kpi-biochar', fmtVal(last.Biochar_Stock||0)   + ' ' + unitLbl());
-          setEl('gl-kpi-emis',    fmtVal(last.Fuel_Emissions||0)  + ' ' + unitLbl());
+          setEl('gl-kpi-emis',    fmtVal(last.Fuel_Emissions||0)  + ' ' + unitLbl() + '/yr');
           setEl('gl-kpi-year-note', 'Latest year: ' + lastYear);
 
           glDrawStockChart(rows);
@@ -988,9 +989,10 @@ function statTile(label, value){
         finally { pyLoading = false; }
       }
 
-      function getInputUnit(){ return document.getElementById('u-lbs').checked?'lbs':document.getElementById('u-kg').checked?'kg':document.getElementById('u-mt').checked?'mt':document.getElementById('u-tgc').checked?'tgc':'kg'; }
+      const UNIT_KG = {lbs:0.45359237, kg:1, t:1e3, mt:1e9, tgc:1e9};   // kg per input unit
+      function getInputUnit(){ for(const u of ['lbs','kg','t','mt','tgc']){ const e=document.getElementById('u-'+u); if(e&&e.checked) return u; } return 'kg'; }
       function getPlotUnit(){ return document.getElementById('p-kg').checked?'kg':'tgc'; }
-      function toKg(arr,inUnit){ const f=(inUnit==='lbs')?0.45359237:(inUnit==='kg')?1:(inUnit==='mt')?1e9:1e9; return arr.map(v=>(v==null?0:Number(v))*f); }
+      function toKg(arr,inUnit){ const f=UNIT_KG[inUnit]||1; return arr.map(v=>(v==null?0:Number(v))*f); }
       function fromKg(arrKg,p){ return (p==='kg')?arrKg:arrKg.map(v=>v/1e9); }
       function unitLabel(p,isC=false){ return (p==='kg')?(isC?'kg C':'kg'):'Tg C (MMTC)'; }
 
@@ -1021,7 +1023,7 @@ function statTile(label, value){
       }
 
       async function runTracker(){
-        if(!pyReady){ await initPy(); if(!pyReady) return; }
+        if(!pyReady){ await initPy(); if(!pyReady) return false; }
         try{
           setStatus('Running tracker…');
           const dataPath=await resolveDataPath();
@@ -1030,20 +1032,33 @@ function statTile(label, value){
           pyodide.globals.set('data_path',dataPath);
           pyodide.globals.set('paras_path',parasPath);
           pyodide.globals.set('out_csv',outCsv);
+          pyodide.globals.set('unit_factor',UNIT_KG[getInputUnit()]||1);
           await pyodide.runPythonAsync(`
 import importlib, pandas as pd
 WPsCT_Main = importlib.import_module('WPsCT_Main')
-WPsCT_Main.tracker(data_path, paras_path, out_csv)
+head = [str(c).strip() for c in pd.read_csv(data_path, nrows=0).columns]
+missing_cols = [c for c in WPsCT_Main.Product_names if c not in head]
+unused_cols  = [c for c in head if c != 'Year' and c not in WPsCT_Main.Product_names]
+WPsCT_Main.tracker(data_path, paras_path, out_csv, unit_factor)
 df = pd.read_csv(out_csv)
 html_preview = df.head(40).to_html(index=False)
+run_note = ''
+if missing_cols: run_note += ' Missing columns set to zero: ' + ', '.join(missing_cols) + '.'
+if unused_cols:  run_note += ' Columns not used: ' + ', '.join(unused_cols) + '.'
           `);
           document.getElementById('results-preview').innerHTML = pyodide.globals.get('html_preview');
           const bytes=pyodide.FS.readFile('/tmp/WPsCT_Results.csv');
           const blob=new Blob([bytes],{type:'text/csv'});
           document.getElementById('download-link').href=URL.createObjectURL(blob);
           document.getElementById('download-link').classList.remove('hidden');
-          setStatus('Done.');
-        }catch(err){ console.error(err); setStatus('Run failed. See console.'); }
+          setStatus('Done.' + pyodide.globals.get('run_note'));
+          return true;
+        }catch(err){
+          console.error(err);
+          const m = String(err && err.message || err).trim().split('\n').pop().replace(/^\w*Error:\s*/, '');
+          setStatus('Run failed. ' + m);
+          return false;
+        }
       }
 
       function plotlySize(div){ const el=document.getElementById(div); return {w:el.clientWidth||820,h:el.clientHeight||380}; }
@@ -1144,7 +1159,7 @@ json.dumps(out, allow_nan=False)
           setStatus('Running model and preparing storage plot…');
           const inUnit=getInputUnit(); const pUnit=getPlotUnit();
           const outCsv='/tmp/WPsCT_Results.csv';
-          await runTracker();   // always re-run, so the plot matches the current selection
+          if(!(await runTracker())) return;   // always re-run, so the plot matches the current selection
           pyodide.globals.set('out_csv',outCsv);
           const jsonStr=await pyodide.runPythonAsync(`
 import pandas as pd, json, numpy as np
@@ -1398,7 +1413,7 @@ json.dumps(out, allow_nan=False)
 
           if (primaryDiam > 0) {
             const sug = suggestProduct(primaryDiam, wt);
-            document.querySelectorAll('.product-card').forEach(card => {
+            document.querySelectorAll('#il-product-grid .product-card').forEach(card => {
               card.classList.remove('suggested');
               if (card.dataset.product === sug) card.classList.add('suggested');
             });
@@ -1412,7 +1427,7 @@ json.dumps(out, allow_nan=False)
       window.selectProduct = function selectProduct(name) {
         selectedIndustrialProduct = name;
         renderParamBox('il-param-box', name, 'ilp');
-        document.querySelectorAll('.product-card').forEach(card => {
+        document.querySelectorAll('#il-product-grid .product-card').forEach(card => {
           card.classList.toggle('selected', card.dataset.product === name);
         });
         const effField = document.getElementById('il-efficiency');
@@ -1443,7 +1458,7 @@ json.dumps(out, allow_nan=False)
                      hou_decay1:1.348, hou_decay2:15.0, pap_decay1:2.618, pap_decay2:5.0}
       };
       const WP_PARAM_LABELS = {
-        disposal_1:'Disposal rate - peak height',
+        disposal_1:'Disposal rate - scale (α)',
         disposal_2:'Disposal rate - spread',
         disposal_3:'Service half-life (years)',
         recycle_1:'Recycling rate - initial',
@@ -1556,8 +1571,10 @@ if len(rp1_rows) > 0:
     rp2 = get_para(prod, 'recycle_2')
     rr_series = [min(1.0, max(0.0, rp1 + rp2 * math.log(max(i+1.0, 1e-12)))) for i in range(n)]
     landfill_in = [landfill_in_raw[i] * (1.0 - rr_series[i]) for i in range(n)]
+    recycled    = [landfill_in_raw[i] * rr_series[i] for i in range(n)]
 else:
     landfill_in = landfill_in_raw[:]
+    recycled    = [0.0] * n
 
 # ── Step 4: Landfill pool - same survival model the full tracker uses ──────────
 lf_map = {
@@ -1577,7 +1594,8 @@ lf_pool_arr = [max(0.0, float(v)) for v in lf_pool_raw]
 # ── Step 5: Derived series ────────────────────────────────────────────────────
 years_arr      = list(range(1, n + 1))
 total_retained = [max(0.0, inuse_arr[i] + lf_pool_arr[i]) for i in range(n)]
-cumul_released = [max(0.0, min(C0, C0 - total_retained[i])) for i in range(n)]
+cumul_recycled = [sum(recycled[:i + 1]) for i in range(n)]
+cumul_released = [max(0.0, min(C0, C0 - total_retained[i] - cumul_recycled[i])) for i in range(n)]
 
 out = {
     'years':          years_arr,
@@ -1585,6 +1603,7 @@ out = {
     'lf_pool':        lf_pool_arr,
     'total_retained': total_retained,
     'cumul_released': cumul_released,
+    'cumul_recycled': cumul_recycled,
     'C0':             C0,
     'product':        prod,
     'n_years':        n,
@@ -1608,8 +1627,10 @@ json.dumps(out, allow_nan=False)
 
         const finalRetained  = res.total_retained[res.total_retained.length - 1];
         const finalReleased  = res.cumul_released[res.cumul_released.length - 1];
+        const finalRecycled  = res.cumul_recycled[res.cumul_recycled.length - 1];
         const retainedPct    = (finalRetained / carbonKg * 100).toFixed(1);
         const releasedPct    = (finalReleased / carbonKg * 100).toFixed(1);
+        const recycledPct    = (finalRecycled / carbonKg * 100).toFixed(1);
         const peakInUseYr    = res.inuse.indexOf(Math.max(...res.inuse)) + 1;
 
         const effPct = (efficiency * 100).toFixed(0);
@@ -1631,7 +1652,13 @@ json.dumps(out, allow_nan=False)
             <span class="text-xs text-gray-500 mt-1 text-center">Released at year ${nYears}<br>(${releasedPct}% of product C)</span>
           </div>
         `;
-        document.getElementById('il-summary-badges').innerHTML = badgesHtml;
+        const recycledBadge = finalRecycled > 0 ? `
+          <div class="flex flex-col items-center p-3 bg-amber-50 rounded-xl border border-amber-200">
+            <span class="text-lg font-bold text-amber-700">${finalRecycled.toFixed(2)} kg C</span>
+            <span class="text-xs text-gray-500 mt-1 text-center">Recycled by year ${nYears}<br>(${recycledPct}% of product C)</span>
+          </div>` : '';
+        document.getElementById('il-summary-badges').innerHTML = badgesHtml + recycledBadge;
+        document.getElementById('il-summary-badges').className = 'grid grid-cols-2 gap-3 ' + (finalRecycled > 0 ? 'sm:grid-cols-5' : 'sm:grid-cols-4');
         document.getElementById('il-summary-panel').classList.remove('hidden');
 
         const traces = [
@@ -1658,6 +1685,11 @@ json.dumps(out, allow_nan=False)
             fill: 'tozeroy', fillcolor: 'rgba(220,38,38,0.06)'
           }
         ];
+        if (finalRecycled > 0) traces.push({
+          x: years, y: res.cumul_recycled,
+          mode: 'lines', name: 'Cumulative Recycled',
+          line: { color: '#d97706', width: 2, dash: 'dashdot' }
+        });
 
         const layout = {
           autosize: true,
@@ -1678,7 +1710,7 @@ json.dumps(out, allow_nan=False)
 
         let html = '<table style="border-collapse:collapse;width:100%;font-size:0.78rem">';
         html += '<thead><tr style="background:#f1f5f9">';
-        ['Year','In-use (kg C)','Landfill Pool (kg C)','Total Retained (kg C)','Cumul. Released (kg C)'].forEach(h=>{
+        ['Year','In-use (kg C)','Landfill Pool (kg C)','Total Retained (kg C)','Cumul. Released (kg C)','Cumul. Recycled (kg C)'].forEach(h=>{
           html += `<th style="border:1px solid #e2e8f0;padding:3px 7px;text-align:right">${h}</th>`;
         });
         html += '</tr></thead><tbody>';
@@ -1691,7 +1723,8 @@ json.dumps(out, allow_nan=False)
            res.inuse[i].toFixed(3),
            res.lf_pool[i].toFixed(3),
            res.total_retained[i].toFixed(3),
-           res.cumul_released[i].toFixed(3)
+           res.cumul_released[i].toFixed(3),
+           res.cumul_recycled[i].toFixed(3)
           ].forEach(v => {
             html += `<td style="border:1px solid #e2e8f0;padding:3px 7px;text-align:right">${v}</td>`;
           });
@@ -1700,9 +1733,9 @@ json.dumps(out, allow_nan=False)
         html += '</tbody></table>';
         document.getElementById('il-results-preview').innerHTML = html;
 
-        let csv = `Year,InUse_kgC,LandfillPool_kgC,TotalRetained_kgC,CumulReleased_kgC\n# LogCarbon=${carbonKgLog.toFixed(4)} ProductCarbon=${carbonKg.toFixed(4)} Efficiency=${efficiency} Method=${volMethod} Volume=${vol.toFixed(4)}m3 Product=${selectedIndustrialProduct}\n`;
+        let csv = `Year,InUse_kgC,LandfillPool_kgC,TotalRetained_kgC,CumulReleased_kgC,CumulRecycled_kgC\n# LogCarbon=${carbonKgLog.toFixed(4)} ProductCarbon=${carbonKg.toFixed(4)} Efficiency=${efficiency} Method=${volMethod} Volume=${vol.toFixed(4)}m3 Product=${selectedIndustrialProduct}\n`;
         for (let i = 0; i < years.length; i++) {
-          csv += `${years[i]},${res.inuse[i].toFixed(4)},${res.lf_pool[i].toFixed(4)},${res.total_retained[i].toFixed(4)},${res.cumul_released[i].toFixed(4)}\n`;
+          csv += `${years[i]},${res.inuse[i].toFixed(4)},${res.lf_pool[i].toFixed(4)},${res.total_retained[i].toFixed(4)},${res.cumul_released[i].toFixed(4)},${res.cumul_recycled[i].toFixed(4)}\n`;
         }
         const blob = new Blob([csv], { type: 'text/csv' });
         const link = document.getElementById('il-download-link');
@@ -1712,7 +1745,7 @@ json.dumps(out, allow_nan=False)
 
       window.clearIlTracker = function clearIlTracker() {
         selectedIndustrialProduct = null;
-        document.querySelectorAll('.product-card').forEach(c => c.classList.remove('selected'));
+        document.querySelectorAll('#il-product-grid .product-card').forEach(c => c.classList.remove('selected'));
         document.getElementById('il-summary-panel').classList.add('hidden');
         document.getElementById('il-results-preview').innerHTML = '';
         document.getElementById('il-download-link').classList.add('hidden');
@@ -1914,8 +1947,10 @@ if len(rp1_rows) > 0:
     rp1 = float(rp1_rows.values[0]); rp2 = get_para(prod, 'recycle_2')
     rr = [min(1.0, max(0.0, rp1 + rp2 * math.log(max(i+1.0,1e-12)))) for i in range(n)]
     landfill_in = [landfill_in_raw[i] * (1.0 - rr[i]) for i in range(n)]
+    recycled    = [landfill_in_raw[i] * rr[i] for i in range(n)]
 else:
     landfill_in = landfill_in_raw[:]
+    recycled    = [0.0] * n
 
 lf_map = {
     'Construction':('con_decay1','con_decay2'),'Exterior':('ext_decay1','ext_decay2'),
@@ -1930,9 +1965,11 @@ lf_pool_arr = [max(0.0, float(v)) for v in lf_pool_raw]
 
 years_arr      = list(range(1, n+1))
 total_retained = [max(0.0, inuse_arr[i]+lf_pool_arr[i]) for i in range(n)]
-cumul_released = [max(0.0, min(C0, C0-total_retained[i])) for i in range(n)]
+cumul_recycled = [sum(recycled[:i+1]) for i in range(n)]
+cumul_released = [max(0.0, min(C0, C0-total_retained[i]-cumul_recycled[i])) for i in range(n)]
 out = {'years':years_arr,'inuse':inuse_arr,'lf_pool':lf_pool_arr,
-       'total_retained':total_retained,'cumul_released':cumul_released,'C0':C0}
+       'total_retained':total_retained,'cumul_released':cumul_released,
+       'cumul_recycled':cumul_recycled,'C0':C0}
 json.dumps(out, allow_nan=False)
           `);
 
@@ -1948,8 +1985,10 @@ json.dumps(out, allow_nan=False)
       function renderSpResults(res, cTotal, carbonKg, eff, vr, wt, nYears) {
         const finalRetained = res.total_retained[res.total_retained.length-1];
         const finalReleased = res.cumul_released[res.cumul_released.length-1];
+        const finalRecycled = res.cumul_recycled[res.cumul_recycled.length-1];
         const retPct = (finalRetained/carbonKg*100).toFixed(1);
         const relPct = (finalReleased/carbonKg*100).toFixed(1);
+        const recPct = (finalRecycled/carbonKg*100).toFixed(1);
         const effPct = (eff*100).toFixed(0);
 
         document.getElementById('sp-summary-badges').innerHTML = `
@@ -1968,7 +2007,12 @@ json.dumps(out, allow_nan=False)
           <div class="flex flex-col items-center p-3 bg-red-50 rounded-xl border border-red-200">
             <span class="text-lg font-bold text-red-600">${finalReleased.toFixed(2)} kg C</span>
             <span class="text-xs text-gray-500 mt-1 text-center">Released at year ${nYears}<br>(${relPct}%)</span>
-          </div>`;
+          </div>` + (finalRecycled > 0 ? `
+          <div class="flex flex-col items-center p-3 bg-amber-50 rounded-xl border border-amber-200">
+            <span class="text-lg font-bold text-amber-700">${finalRecycled.toFixed(2)} kg C</span>
+            <span class="text-xs text-gray-500 mt-1 text-center">Recycled by year ${nYears}<br>(${recPct}%)</span>
+          </div>` : '');
+        document.getElementById('sp-summary-badges').className = 'grid grid-cols-2 gap-3 ' + (finalRecycled > 0 ? 'sm:grid-cols-5' : 'sm:grid-cols-4');
         document.getElementById('sp-summary-panel').classList.remove('hidden');
 
         const traces = [
@@ -1981,6 +2025,8 @@ json.dumps(out, allow_nan=False)
           { x:res.years, y:res.cumul_released, mode:'lines', name:'Cumulative Released',
             line:{color:'#dc2626',width:2}, fill:'tozeroy', fillcolor:'rgba(220,38,38,0.06)' }
         ];
+        if (finalRecycled > 0) traces.push({ x:res.years, y:res.cumul_recycled, mode:'lines', name:'Cumulative Recycled',
+            line:{color:'#d97706',width:2,dash:'dashdot'} });
         Plotly.newPlot('sp-plot-area', traces, {
           autosize:true, margin:{l:65,r:20,t:50,b:80},
           legend:{orientation:'h',y:-0.28},
@@ -1991,7 +2037,7 @@ json.dumps(out, allow_nan=False)
         }, { responsive:true, displayModeBar:true, displaylogo:false, modeBarButtonsToRemove:['select2d','lasso2d','autoScale2d'], toImageButtonOptions:{format:'png',scale:2,filename:'WPsCT_primary'} });
 
         let html = '<table style="border-collapse:collapse;width:100%;font-size:0.78rem"><thead><tr style="background:#f1f5f9">';
-        ['Year','In-use (kg C)','Landfill Pool (kg C)','Total Retained (kg C)','Cumul. Released (kg C)'].forEach(h => {
+        ['Year','In-use (kg C)','Landfill Pool (kg C)','Total Retained (kg C)','Cumul. Released (kg C)','Cumul. Recycled (kg C)'].forEach(h => {
           html += `<th style="border:1px solid #e2e8f0;padding:3px 7px;text-align:right">${h}</th>`;
         });
         html += '</tr></thead><tbody>';
@@ -2000,7 +2046,7 @@ json.dumps(out, allow_nan=False)
           const bg = i%2===0?'#fff':'#f8fafc';
           html += `<tr style="background:${bg}">`;
           [res.years[i], res.inuse[i].toFixed(3), res.lf_pool[i].toFixed(3),
-           res.total_retained[i].toFixed(3), res.cumul_released[i].toFixed(3)].forEach(v => {
+           res.total_retained[i].toFixed(3), res.cumul_released[i].toFixed(3), res.cumul_recycled[i].toFixed(3)].forEach(v => {
             html += `<td style="border:1px solid #e2e8f0;padding:3px 7px;text-align:right">${v}</td>`;
           });
           html += '</tr>';
@@ -2008,9 +2054,9 @@ json.dumps(out, allow_nan=False)
         html += '</tbody></table>';
         document.getElementById('sp-results-preview').innerHTML = html;
 
-        let csv = `Year,InUse_kgC,LandfillPool_kgC,TotalRetained_kgC,CumulReleased_kgC\n# SpCarbon=${cTotal.toFixed(4)} ServiceableCarbon=${carbonKg.toFixed(4)} Efficiency=${eff} Volume=${vr.vol.toFixed(4)}m3 Product=${selectedSawnProduct}\n`;
+        let csv = `Year,InUse_kgC,LandfillPool_kgC,TotalRetained_kgC,CumulReleased_kgC,CumulRecycled_kgC\n# SpCarbon=${cTotal.toFixed(4)} ServiceableCarbon=${carbonKg.toFixed(4)} Efficiency=${eff} Volume=${vr.vol.toFixed(4)}m3 Product=${selectedSawnProduct}\n`;
         for (let i=0; i<res.years.length; i++) {
-          csv += `${res.years[i]},${res.inuse[i].toFixed(4)},${res.lf_pool[i].toFixed(4)},${res.total_retained[i].toFixed(4)},${res.cumul_released[i].toFixed(4)}\n`;
+          csv += `${res.years[i]},${res.inuse[i].toFixed(4)},${res.lf_pool[i].toFixed(4)},${res.total_retained[i].toFixed(4)},${res.cumul_released[i].toFixed(4)},${res.cumul_recycled[i].toFixed(4)}\n`;
         }
         const blob = new Blob([csv], { type: 'text/csv' });
         const link = document.getElementById('sp-download-link');
@@ -2191,8 +2237,8 @@ json.dumps(out, allow_nan=False)
           ylab='Annual disposal rate'; xlab='Product age (years)';
         } else if(type==='recycling'){
           const r1=sgNum('sg-r1-'+key), r2=sgNum('sg-r2-'+key);
-          for(let k=0;k<=50;k++){ x.push(k); y.push(Math.min(1,Math.max(0,r1+r2*Math.log(k+1)))); }
-          ylab='Recycling rate'; xlab='Years since production';
+          for(let k=1;k<=50;k++){ x.push(k); y.push(Math.min(1,Math.max(0,r1+r2*Math.log(k)))); }
+          ylab='Recycling rate'; xlab='Year order k (first year = 1)';
         } else {
           const k1=sgNum('sg-lf1-'+key), k2=sgNum('sg-lf2-'+key);
           // Same survival curve the tracker uses: 1 minus the accumulated decay,
@@ -2327,20 +2373,21 @@ json.dumps(out, allow_nan=False)
           const recs=JSON.stringify(await sensGetRecords());
           let seed=12345; const rnd=()=>{ seed=(seed*1103515245+12345)&0x7fffffff; return seed/0x7fffffff; };
           const samp=()=>1-spread+2*spread*rnd();
-          const paths=[], finals=[];
+          const paths=[], finals=[]; let mcYears=null;
           for(let i=0;i<N;i++){
             const r=await sensRunPoint(dp, recs, [['sl:all',samp()],['rec:all',samp()],['lf:all',samp()]]);
-            paths.push(r.total); finals.push(r.final);
+            paths.push(r.total); finals.push(r.final); mcYears = r.years;
             setSensStatus('Monte Carlo… '+(i+1)+'/'+N); setSensProgress((i+1)/N); await yieldUI();
           }
           const yrs=paths[0].map((_,i)=>i), col=(i)=>paths.map(p=>p[i]);
+          const mcX=(mcYears && mcYears.length===yrs.length) ? mcYears : yrs;
           const p05=yrs.map(i=>sensPctile(col(i),0.05)/TG), p50=yrs.map(i=>sensPctile(col(i),0.5)/TG), p95=yrs.map(i=>sensPctile(col(i),0.95)/TG);
           Plotly.newPlot('sens-mc-plot', [
-            { x:yrs, y:p95, mode:'lines', line:{width:0}, showlegend:false, hoverinfo:'skip' },
-            { x:yrs, y:p05, mode:'lines', line:{width:0}, fill:'tonexty', fillcolor:'rgba(162,28,175,0.15)', name:'5-95%' },
-            { x:yrs, y:p50, mode:'lines', line:{color:'#a21caf',width:2.5}, name:'Median' }
+            { x:mcX, y:p95, mode:'lines', line:{width:0}, showlegend:false, hoverinfo:'skip' },
+            { x:mcX, y:p05, mode:'lines', line:{width:0}, fill:'tonexty', fillcolor:'rgba(162,28,175,0.15)', name:'5-95%' },
+            { x:mcX, y:p50, mode:'lines', line:{color:'#a21caf',width:2.5}, name:'Median' }
           ], { margin:{l:70,r:20,t:10,b:50}, legend:{orientation:'h',y:-0.2},
-               xaxis:{title:'Year index'}, yaxis:{title:'Total stored carbon (Tg C)', separatethousands:true} },
+               xaxis:{title:'Year'}, yaxis:{title:'Total stored carbon (Tg C)', separatethousands:true} },
             Object.assign({toImageButtonOptions:{format:'png',scale:2,filename:'WPsCT_uncertainty'}}, SENS_CFG));
           const fp05=sensPctile(finals,0.05)/TG, fp50=sensPctile(finals,0.5)/TG, fp95=sensPctile(finals,0.95)/TG;
           setSensStatus('Uncertainty: final '+fp50.toFixed(0)+' Tg C (5-95%: '+fp05.toFixed(0)+'-'+fp95.toFixed(0)+').');
