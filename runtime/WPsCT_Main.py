@@ -7,11 +7,36 @@ import pandas as pd
 import WPsCT_Functions as wf
 
 #------------------------------------------------------------------------------
+# The eight input columns. A missing column is treated as zero.
+Product_names = ["Biofuel", "Biochar", "Construction", "Exterior", "Household",
+                 "Graphic Paper", "Other Paper", "Household Paper"]
+
+#------------------------------------------------------------------------------
 # Function to track wood products carbon flux
-def tracker (wp_data, wp_para, savefile):
+# unit_factor is the number of kg in one input unit (1 for kg, 1e9 for Tg).
+def tracker (wp_data, wp_para, savefile, unit_factor=1.0):
     # Read data and parameters
     data = pd.read_csv(wp_data)
     para = pd.read_csv(wp_para)
+
+    # Check the input data. The model needs one row per year.
+    data.columns = [str(c).strip() for c in data.columns]
+    if "Year" not in data.columns:
+        raise ValueError("The input file needs a Year column.")
+    data["Year"] = pd.to_numeric(data["Year"], errors="coerce")
+    data = data[data["Year"].notna()].reset_index(drop=True)
+    if len(data) == 0:
+        raise ValueError("The input file has no data rows.")
+    if (data["Year"] % 1 != 0).any() or (data["Year"].diff().dropna() != 1).any():
+        raise ValueError("The Year column must hold consecutive integer years with no gaps.")
+    data["Year"] = data["Year"].astype(int)
+
+    # Blank cells are set to zero. Equation 1 is calibrated for kg C, so all
+    # inputs are converted to kg C here and the results are converted back.
+    for name in Product_names:
+        if name not in data.columns:
+            data[name] = 0.0
+        data[name] = pd.to_numeric(data[name], errors="coerce").fillna(0.0) * unit_factor
     tyr  = len(data['Year'])
 
     # ---------------- Biofuel / Biochar / Charcoal  carbon flux --------------
@@ -93,7 +118,7 @@ def tracker (wp_data, wp_para, savefile):
     padc1 = para.loc[(para['Product']=='Landfill') & (para['Variable']=='pap_decay1'),'Parameter'].values[0]
     padc2 = para.loc[(para['Product']=='Landfill') & (para['Variable']=='pap_decay2'),'Parameter'].values[0]
 
-    # Paper-landfill input = Graphic + Other
+    # Paper-landfill input = Graphic + Other + Household Paper
     lf_pap = pd.Series(gp_lfin, dtype=float) + pd.Series(op_lfin, dtype=float) + pd.Series(hp_lfin, dtype=float)
 
     # Landfill per stream
@@ -148,6 +173,10 @@ def tracker (wp_data, wp_para, savefile):
         'LF_Stock_Total' : pd.Series(P_lf, dtype=float),
         'LF_Decay_Total' : pd.Series(D_lf, dtype=float)
     })
+
+    # Convert the results back to the input unit.
+    value_cols = [c for c in out.columns if c != "Year"]
+    out[value_cols] = out[value_cols] / unit_factor
 
     out.to_csv(f'{savefile}', index=False)
     print(f"Saved results -> {savefile}")
